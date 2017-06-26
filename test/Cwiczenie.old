@@ -1,0 +1,151 @@
+#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
+#include "DataFormats/Common/interface/Handle.h"
+#include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+
+#include "SimDataFormats/Track/interface/SimTrack.h"
+#include "SimDataFormats/Track/interface/SimTrackContainer.h"
+#include "DataFormats/L1GlobalMuonTrigger/interface/L1MuRegionalCand.h"
+#include "L1Trigger/RPCTrigger/interface/RPCConst.h"
+
+#include "TProfile.h"
+#include "TH1D.h"
+#include "TH2D.h"
+#include "TFile.h"
+#include <sstream>
+
+
+
+using namespace std;
+
+//object definition
+class Cwiczenie : public edm::EDAnalyzer {
+public:
+  //constructor, function is called when new object is created
+  explicit Cwiczenie(const edm::ParameterSet& conf);
+  //destructor, function is called when object is destroyed
+  ~Cwiczenie();
+  //edm filter plugin specific functions
+  virtual void beginJob();
+  virtual void analyze(const edm::Event&, const edm::EventSetup&);
+  virtual void endJob();
+private:
+private:
+  edm::ParameterSet theConfig;
+  unsigned int theEventCount;
+  //added variables
+  TFile *myRootFile;
+  TH2D *ptGenPtReconHIST;
+  TH2D *etaPhiHIST;
+
+};
+
+
+Cwiczenie::Cwiczenie(const edm::ParameterSet& conf) 
+  : theConfig(conf), theEventCount(0) 
+{
+  cout <<" CTORXX" << endl;
+}
+
+
+Cwiczenie::~Cwiczenie() 
+{ 
+  cout <<" DTOR" << endl;
+}
+
+void Cwiczenie::beginJob()
+{
+  //make a new Root file
+  myRootFile=new TFile("outputtest.root","RECREATE");
+  //create a histogram
+  ptGenPtReconHIST=new TH2D("hist1","hist1;pt generated muons;pt resconstructed muons",10,-1.,1.,10,-1.,1.);
+  etaPhiHIST=new TH2D("hist2","hist2;eta;phi", 10,-1.,1.,10,-1.,1.);
+  //enable automatic re-binning
+  ptGenPtReconHIST->SetBit(TH1::kCanRebin);
+  etaPhiHIST->SetBit(TH1::kCanRebin);
+
+  cout << "KOKO" << endl;
+}
+
+void Cwiczenie::endJob()
+{
+  //write histogram data
+  ptGenPtReconHIST->Write();
+  etaPhiHIST->Write();
+  myRootFile->Close();
+  //delete pointed data
+  delete myRootFile;
+  delete ptGenPtReconHIST;
+  delete etaPhiHIST;
+  cout << "END" << endl;
+}
+
+void Cwiczenie::analyze(
+    const edm::Event& ev, const edm::EventSetup& es)
+{
+  //add data to the histogram
+  cout <<"*** Cwiczenie, analyze event: " << ev.id()<<" event count:"<<++theEventCount << endl;
+
+  float pt_gen;
+
+  std::cout <<" SIMULATED MUONS: "<<std::endl;
+  edm::Handle<edm::SimTrackContainer> simTk;
+  ev.getByLabel("g4SimHits",simTk);
+  std::vector<SimTrack> mySimTracks = *(simTk.product());
+  for (std::vector<SimTrack>::const_iterator it=mySimTracks.begin(); it<mySimTracks.end(); it++) {
+    const SimTrack & track = *it;
+    if ( track.type() == -99) continue;
+    if ( track.vertIndex() != 0) continue;
+    float phi_gen = track.momentum().phi(); //momentum azimutal angle
+    pt_gen = track.momentum().pt(); //transverse momentum
+    float eta_gen = track.momentum().eta(); //pseudorapidity
+    std::cout <<" trackId: " <<track.trackId() 
+          << " pt_gen: " << pt_gen <<" eta_gen: "<<eta_gen<<" phi_gen: "<<phi_gen
+          <<" vtx: "<<track.vertIndex()<<" type: "<<track.type() // 13 or -13 is a muon
+          << std::endl;
+  }
+
+
+
+  typedef std::vector<L1MuRegionalCand> RegCand;
+  RegCand allRpcCand;
+
+  edm::Handle<std::vector<L1MuRegionalCand> > candB;
+  ev.getByLabel("l1RpcEmulDigis", "RPCb", candB);
+  allRpcCand.insert(allRpcCand.end(), candB->begin(), candB->end());
+  edm::Handle<std::vector<L1MuRegionalCand> > candF;
+  ev.getByLabel("l1RpcEmulDigis", "RPCf", candF);
+  allRpcCand.insert(allRpcCand.end(), candF->begin(), candF->end());
+  std::cout <<" RECONSTRUCTED MUON CANDIDATES "<< std::endl;
+  for (RegCand::const_iterator it=allRpcCand.begin(); it != allRpcCand.end(); it++) {
+    if (it->empty()) continue;
+    if (it->bx() != 0) continue;
+    int tower = it->eta_packed();
+    if (tower > 16) tower = - ( (~tower & 63) + 1);
+    float phi_recon = 2*M_PI*(it->phi_packed())/144; 
+    float pt_recon=RPCConst::ptFromIpt(it->pt_packed());
+    float eta_recon = RPCConst::etaFromTowerNum(tower);
+    std::cout <<" eta: "<< eta_recon;
+    std::cout <<" phi: "<< phi_recon;
+    std::cout <<" pt: "<< pt_recon;
+    std::cout <<" quality: "<< it->quality();
+    std::cout << std::endl;
+
+    //add data to eta/phi histogram
+    etaPhiHIST->Fill(eta_recon,phi_recon);
+
+    //add data to pt generated / pt reconstructed
+    ptGenPtReconHIST->Fill(pt_gen,pt_recon);
+  }
+
+}
+
+
+
+
+DEFINE_FWK_MODULE(Cwiczenie);
+
