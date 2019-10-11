@@ -1,6 +1,6 @@
 #Instrukcja poczatkowa cwiczenia
 
-#ćwiczenie wykonywane jest ma naszynie wirtualnej dzialajacej na 
+#Cwiczenie wykonywane jest ma naszynie wirtualnej dzialajacej na 
 #komputerze zcobl w domenie hep. W celu zalozenia konta trzeba sie skontaktowac z A. Kalinowskim
 #logowanie usera <userid> na komputer zcobl z sieci FUW:
 ssh -X <userid>@zcobl.hep -p 2222
@@ -14,7 +14,7 @@ scram list CMSSW
 
 #Inicjalizacja przestrzeni roboczej w wersji CMSSW_10_6_4
 cmsrel CMSSW_10_6_4
-cd CMSSW_10_6_24/src
+cd CMSSW_10_6_4/src
 cmsenv
 
 # Sciagniecie cwiczenia i kompilacja
