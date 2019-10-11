@@ -1,7 +1,9 @@
 #Instrukcja poczatkowa cwiczenia
 
-#logowanie na komputer zcoble z fizyk2
-ssh -X zcobl.hep
+#ćwiczenie wykonywane jest ma naszynie wirtualnej dzialajacej na 
+#komputerze zcobl w domenie hep. W celu zalozenia konta trzeba sie skontaktowac z A. Kalinowskim
+#logowanie usera <userid> na komputer zcobl z sieci FUW:
+ssh -X <userid>@zcobl.hep -p 2222
 
 #Ustawianie srodowiska CMSSW dla bash (można dopisc do .bashrc)
 export VO_CMS_SW_DIR=/opt/soft/cms
@@ -10,9 +12,9 @@ source $VO_CMS_SW_DIR/cmsset_default.sh
 #sprawdzenie dostepnych wersji CMSSW
 scram list CMSSW
 
-#Inicjalizacja przestrzeni roboczej w wersji CMSSW_8_0_26
-cmsrel CMSSW_8_0_26
-cd CMSSW_8_0_26/src
+#Inicjalizacja przestrzeni roboczej w wersji CMSSW_10_6_4
+cmsrel CMSSW_10_6_4
+cd CMSSW_10_6_24/src
 cmsenv
 
 # Sciagniecie cwiczenia i kompilacja
