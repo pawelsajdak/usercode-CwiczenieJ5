@@ -13,7 +13,7 @@ process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 # input files (up to 255 files accepted)
 process.source = cms.Source('PoolSource',
 fileNames = cms.untracked.vstring( 
-    'file:/mnt/shared/cms/akalinow/CMS/OverlapTrackFinder/Crab/SingleMuFullEtaTestSample/750_FullEta_v2/data/SingleMu_16_p_1_1_eJz.root', 
+    'file:/mnt/shared/slc7_sf/akalinow/CMS/OverlapTrackFinder/Crab/SingleMuFullEtaTestSample/750_FullEta_v2/data/SingleMu_16_p_1_1_eJz.root', 
                                   ),
 skipEvents =  cms.untracked.uint32(0)
 )
