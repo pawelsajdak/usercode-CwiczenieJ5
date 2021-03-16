@@ -6,8 +6,9 @@
 #logowanie usera <userid> na komputer zcobl z sieci FUW (np. tempac):
 ssh -X <userid>@zcobl.hep -p 1921
 
-#Ustawianie srodowiska CMSSW dla bash (można dopisc do .bashrc)
-export VO_CMS_SW_DIR=/opt/soft/cms
+#Sprawdzić czy zmienna środowiskowa VO_CMS_SW_DIR jest ustawiona, ewentalnie ustawić jak poniżej
+#Ustawianie srodowiska CMSSW dla bash (można dopisc do .bashrc):
+export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
 source $VO_CMS_SW_DIR/cmsset_default.sh
 
 #sprawdzenie dostepnych wersji CMSSW
