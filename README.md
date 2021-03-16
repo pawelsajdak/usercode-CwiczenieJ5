@@ -1,9 +1,10 @@
-#Instrukcja poczatkowa cwiczenia
+#Instrukcja poczatkowa - wstęp do trygera CMS
 
 #Cwiczenie wykonywane jest ma naszynie wirtualnej dzialajacej na 
-#komputerze zcobl w domenie hep. W celu zalozenia konta trzeba sie skontaktowac z A. Kalinowskim
-#logowanie usera <userid> na komputer zcobl z sieci FUW:
-ssh -X <userid>@zcobl.hep -p 2222
+#komputerze zcobl w domenie hep. W celu zalozenia konta trzeba sie skontaktowac z A. Kalinowskim lub poprosić o to M. Koneckiego.
+#Mając konto usera <useid> oraz password można zalogować się na komputer zcobl.
+#logowanie usera <userid> na komputer zcobl z sieci FUW (np. tempac):
+ssh -X <userid>@zcobl.hep -p 1921
 
 #Ustawianie srodowiska CMSSW dla bash (można dopisc do .bashrc)
 export VO_CMS_SW_DIR=/opt/soft/cms
@@ -12,9 +13,9 @@ source $VO_CMS_SW_DIR/cmsset_default.sh
 #sprawdzenie dostepnych wersji CMSSW
 scram list CMSSW
 
-#Inicjalizacja przestrzeni roboczej w wersji CMSSW_10_6_4
-cmsrel CMSSW_10_6_4
-cd CMSSW_10_6_4/src
+#Inicjalizacja przestrzeni roboczej w wersji CMSSW_10_6_22
+cmsrel CMSSW_10_6_22
+cd CMSSW_10_6_22/src
 cmsenv
 
 # Sciagniecie cwiczenia i kompilacja
