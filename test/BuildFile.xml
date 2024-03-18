@@ -8,11 +8,13 @@
 <use   name="SimDataFormats/GeneratorProducts"/>
 <use   name="SimDataFormats/TrackingAnalysis"/>
 <use   name="SimGeneral/HepPDTRecord"/>
+<use   name="DataFormats/L1DTTrackFinder"/>
 <use   name="clhep"/>
 <use   name="hepmc"/>
 <use   name="heppdt"/>
 
-<library   file="Cwiczenie.cc" name="Cwiczenie">
-<library   file="Lic.cc" name="Lic">
+<!--library   file="Cwiczenie.cc" name="Cwiczenie"-->
+<!--library   file="Lic.cc" name="Lic" -->
+<library   file="Analysis_GJ.cc" name="Analysis">
   <flags   EDM_PLUGIN="1"/>
 </library>
