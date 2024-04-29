@@ -20,6 +20,6 @@
 
 <!--library   file="Cwiczenie.cc" name="Cwiczenie"-->
 <!--library   file="Lic.cc" name="Lic" -->
-<library   file="Analysis_GJ.cc" name="Analysis">
+<library   file="Analysis_cwKS.cc" name="Analysis">
   <flags   EDM_PLUGIN="1"/>
 </library>
