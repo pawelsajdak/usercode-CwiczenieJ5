@@ -29,6 +29,22 @@
 #include "SimDataFormats/TrackingAnalysis/interface/TrackingVertex.h"
 #include "SimDataFormats/TrackingAnalysis/interface/TrackingVertexContainer.h"
 
+#include "MagneticField/Engine/interface/MagneticField.h"
+#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+#include "Geometry/CommonDetUnit/interface/GeomDet.h"
+#include "Geometry/CommonDetUnit/interface/GlobalTrackingGeometry.h"
+#include "Geometry/Records/interface/GlobalTrackingGeometryRecord.h"
+
+#include "TrackingTools/GeomPropagators/interface/Propagator.h"
+#include "TrackingTools/MaterialEffects/interface/PropagatorWithMaterial.h"
+#include "TrackingTools/Records/interface/TrackingComponentsRecord.h"
+
+
+#include "DataFormats/GeometryVector/interface/GlobalPoint.h"
+#include "DataFormats/GeometryVector/interface/GlobalVector.h"
+#include "TrackingTools/TrajectoryParametrization/interface/GlobalTrajectoryParameters.h"
+#include "TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h"
+
 #include "FWCore/PluginManager/interface/ModuleDef.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
@@ -84,6 +100,10 @@ private:
   edm::EDGetTokenT<TrackingParticleCollection> inputTP;
 //  edm::EDGetTokenT<TrackingVertexCollection> inputTV, inputTV0;
 
+ edm::ESGetToken<GlobalTrackingGeometry, GlobalTrackingGeometryRecord> theGeomteryToken;
+ edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> theFieldToken;
+ edm::ESGetToken<Propagator, TrackingComponentsRecord> thePropagatorToken;
+
 
   bool debug;
   unsigned int theEventCnt;
@@ -107,20 +127,38 @@ Analysis::Analysis(const edm::ParameterSet & cfg)
   inputTP  =   consumes<TrackingParticleCollection>(edm::InputTag("mix","MergedTrackTruth"));
 //  inputTV  =   consumes<TrackingVertexCollection>(edm::InputTag("mix","MergedTrackTruth"));
 //  inputTV0 =   consumes<TrackingVertexCollection>(edm::InputTag("mix","InitialVertices"));
+//  : theGeomteryToken(cColl.esConsumes()), theFieldToken(cColl.esConsumes()),
+  theGeomteryToken=esConsumes<GlobalTrackingGeometry, GlobalTrackingGeometryRecord>();
+  theFieldToken=esConsumes<MagneticField, IdealMagneticFieldRecord>();   
+  thePropagatorToken=esConsumes<Propagator, TrackingComponentsRecord>(edm::ESInputTag("","SteppingHelixPropagatorAny")); 
+
 
   hLicExample = new TH2D("hLicExample","hLicExample", 12,0.5,12.5, 8,-0.5,7.5);
 }
 
 void Analysis::analyzeDT( const edm::Event &ev, const edm::EventSetup& es) {
   if (debug) std::cout << "-------- Tracking Particles -----------" << std::endl;
+
+  GlobalTrajectoryParameters gtp;
+  const MagneticField * field = &es.getData(theFieldToken);
+  const GlobalTrackingGeometry & globalGeometry = es.getData(theGeomteryToken);
+
+
+
   edm::Handle<TrackingParticleCollection> tpColl;
   ev.getByToken(inputTP, tpColl);
   const TrackingParticleCollection & myTP = *(tpColl.product());
   if (debug) std::cout<<" TRACKING PARTICLES: " << myTP.size() << std::endl;
   for (const auto & tp : myTP) {
 //    if ( abs( tp.pdgId())!=13  || tp.pt() < 1. || tp.parentVertex()->position().Rho()>200. ||  fabs(tp.parentVertex()->position().T()) > 24.) continue;
+    if ( abs( tp.pdgId())==13  && tp.pt() > 1. && gtp.charge()==0) {
+      const auto & vtx = tp.parentVertex()->position();
+      const auto & mom = tp.momentum();
+      gtp=GlobalTrajectoryParameters(GlobalPoint(vtx.x(), vtx.y(), vtx.z()), GlobalVector(mom.x(), mom.y(), mom.z()), tp.charge(), field);
+    } 
     if (debug) std::cout << print(tp)<<std::endl;
   }
+
 
   if (debug) std::cout << "-------- HERE DIGI COMPARE DT ---------" << std::endl;
   edm::Handle<L1MuDTChambPhContainer> digiCollectionDTPh_leg;
@@ -132,7 +170,6 @@ void Analysis::analyzeDT( const edm::Event &ev, const edm::EventSetup& es) {
     if (chDigi.stNum() ==4) continue;
     if (chDigi.bxNum() != 0) continue;
     if (chDigi.code()==7) continue;
-    // DTChamberId chId(chDigi.whNum(),chDigi.stNum(),chDigi.scNum()+1);
     theAllDtPDigisCnt++;
     if (debug) std::cout <<"DtDataWord64 BMTF    " 
         <<" bxNum: "<<chDigi.bxNum()
@@ -144,6 +181,16 @@ void Analysis::analyzeDT( const edm::Event &ev, const edm::EventSetup& es) {
         <<" code(q): "<< chDigi.code()
         << std::endl;
     hLicExample->Fill(chDigi.scNum()+1,chDigi.code());
+    if (gtp.charge() !=0) {
+      FreeTrajectoryState fts(gtp);
+      DTChamberId dtChamberId(chDigi.whNum(),chDigi.stNum(),chDigi.scNum()+1);
+      // GlobalPoint detPosition = globalGeometry.idToDet(dtChamberId)->position();
+      //const DTChamber * chamber = geomDt.chamber(dtChamberId);
+      const GeomDet * geomDet = globalGeometry.idToDet(dtChamberId);
+      const Propagator & propagator = es.getData(thePropagatorToken);
+      TrajectoryStateOnSurface stateAtDet =  propagator.propagate(fts, geomDet->surface());
+      std::cout <<" Is PROPAGATION VALID: "<<stateAtDet.isValid() <<std::endl;
+    }
   }
 
 /*

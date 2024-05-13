@@ -32,7 +32,7 @@ process.source = cms.Source("PoolSource",
 fileNames = cms.untracked.vstring(files),
 #skipEvents =  cms.untracked.uint32(220)
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 #
 # import of standard configurations
@@ -43,7 +43,13 @@ process.load('Configuration.EventContent.EventContent_cff')
 #process.load('Configuration.Geometry.GeometryExtended2023Reco_cff')
 process.load('Configuration.Geometry.GeometryExtended2026D99Reco_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
+process.load("Configuration.StandardSequences.Reconstruction_cff")
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
+
+#process.load("TrackingTools.RecoGeometry.RecoGeometries_cff")
+#process.load("TrackingTools.TrackRefitter.TracksToTrajectories_cff")
+#process.load("TrackingTools.TrackRefitter.globalMuonTrajectories_cff")
+
 
 #
 # set proper GlobalTag
