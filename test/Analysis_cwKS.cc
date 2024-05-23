@@ -71,7 +71,7 @@ private:
   bool debug;
   unsigned int theEventCount;
   TH1D *histo;
-  TH1D *hMjpsi, *hMBpm, *hMLam, *hTest1, *hTest2, *hTest3;
+  TH1D *hMjpsi, *hMBpm, *hMBpm_mm, *hMLam, *hTest1, *hTest2, *hTest3;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT< vector<pat::Muon> > theMuonDsplToken;
