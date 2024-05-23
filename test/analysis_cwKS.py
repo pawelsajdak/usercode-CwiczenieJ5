@@ -8,6 +8,7 @@ process = cms.Process("MojaAnaliza")
 # MessageLogger & co.
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1)
+process.MessageLogger.suppressWarning  = cms.untracked.vstring('Geometry','AfterSource','L1T')
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 
 '''
@@ -24,7 +25,6 @@ for f in lsOutput.split():
 print (files)
 print (len(files))
 '''  
-
 
 # input files (up to 255 files accepted)
 process.source = cms.Source('PoolSource',
@@ -47,14 +47,11 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
 
-process.load('FWCore.MessageService.MessageLogger_cfi')
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1)
-process.MessageLogger.suppressWarning  = cms.untracked.vstring('Geometry','AfterSource','L1T')
-process.options = cms.untracked.PSet( wantSummary=cms.untracked.bool(False))
 
 process.analiza= cms.EDAnalyzer("Analysis",
   muonSrc = cms.InputTag("slimmedMuons"),
-  outHist = cms.string("histos.root")
+  outHist = cms.string("histos.root"),
+  debug = cms.bool(True)
 )
 
 process.MyPath = cms.Path(process.analiza)

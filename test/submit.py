@@ -23,14 +23,14 @@ for f in lsOutput.split():
   files.append(dataDir+f)
 print ('number of files: ',len(files))
 
-nJobs = 25
-maxRunningJobs = 8 
+nJobs = 216
+maxRunningJobs = 6 
 files_splitted = np.array_split(files, nJobs)
 print ('number of files: ',len(files),', submitting in', nJobs,' jobs, max running jobs: ',maxRunningJobs)
 
 myProc=[]
 for fs in range(nJobs):
-  while (checkRunning(myProc) >= maxRunningJobs) : subprocess.run(['sleep','5'])
+  while (checkRunning(myProc) >= maxRunningJobs) : subprocess.run(['sleep','30'])
 
   print ('nRunning is:', checkRunning(myProc),' submitting job number:',fs,'\n', files_splitted[fs])
   jobId =str(fs).zfill(3)

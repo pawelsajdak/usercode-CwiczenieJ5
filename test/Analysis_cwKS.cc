@@ -36,11 +36,20 @@ using namespace std;
 
 double muonMass = 0.105658;
 double kaonMass = 0.493677;
-double jpsiMass = 3.096916;
+double jpsiMass = 3.096900;
+double pionMass = 0.139570;
+double protonMass = 0.938272;
+
 ROOT::Math::PxPyPzEVector lorentzVector(const math::XYZVector & mom, double mass) {
   return ROOT::Math::PxPyPzEVector( mom.x(), mom.y(), mom.z(), sqrt( mass*mass+mom.mag2()));
 }
+ROOT::Math::PxPyPzEVector lorentzVector(const ROOT::Math::PxPyPzEVector & orig, double mass) {
+  return ROOT::Math::PxPyPzEVector(orig).SetE(sqrt(mass*mass+orig.P2()));
+}
 
+
+
+template <typename T> T sqr(T v) { return v*v; }
 //object definition
 class Analysis : public edm::one::EDAnalyzer<> {
 public:
@@ -59,9 +68,10 @@ public:
 private:
 
   edm::ParameterSet theConfig;
+  bool debug;
   unsigned int theEventCount;
   TH1D *histo;
-  TH1D *hMjpsi, *hMBpm;
+  TH1D *hMjpsi, *hMBpm, *hMLam, *hTest1, *hTest2, *hTest3;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT< vector<pat::Muon> > theMuonDsplToken;
@@ -76,7 +86,7 @@ private:
 
 
 Analysis::Analysis(const edm::ParameterSet& conf)
-  : theConfig(conf), theEventCount(0)
+  : theConfig(conf), debug(false),  theEventCount(0)
 {
   cout <<" CTORXX" << endl;
   theMuonToken = consumes< vector<pat::Muon> >( theConfig.getParameter<edm::InputTag>("muonSrc"));
@@ -88,6 +98,7 @@ Analysis::Analysis(const edm::ParameterSet& conf)
   theVertexCPCToken = consumes< vector<reco::VertexCompositePtrCandidate> >(edm::InputTag("slimmedSecondaryVertices"));
   theCandidateToken     = consumes< vector<pat::PackedCandidate> > (edm::InputTag("packedPFCandidates"));
   theTrackBuilderToken = esConsumes(edm::ESInputTag("", "TransientTrackBuilder"));
+  if(theConfig.exists("debug")) debug = theConfig.getParameter<bool>("debug"); 
 }
 
 Analysis::~Analysis()
@@ -101,6 +112,11 @@ void Analysis::beginJob()
   histo =new TH1D("histo","test; X; #events",10, 0., 10.);
   hMjpsi=new TH1D("hMjpsi","test; X; #events",1000, 2., 12.);
   hMBpm=new TH1D("hMBpm","test; X; #events",200, 4., 6.);
+  hMBpm_mm=new TH1D("hMBpm_mm","test; X; #events",200, 4., 6.);
+  hMLam=new TH1D("hMLam","test; X; #events",900, 0., 9.);
+  hTest1=new TH1D("hTest1","test; X; #events",200, 4., 6.);
+  hTest2=new TH1D("hTest2","test; X; #events",200, 4., 6.);
+  hTest3=new TH1D("hTest3","test; X; #events",200, 4., 10.);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -112,6 +128,11 @@ void Analysis::endJob()
   histo->Write();
   hMjpsi->Write();
   hMBpm->Write();
+  hMBpm_mm->Write();
+  hMLam->Write();
+  hTest1->Write();
+  hTest2->Write();
+  hTest3->Write();
   myRootFile.Close();
   delete histo;
   cout << "HERE Cwiczenie::endJob()" << endl;
@@ -120,7 +141,6 @@ void Analysis::endJob()
 void Analysis::analyze(
     const edm::Event& ev, const edm::EventSetup& es)
 {
-  bool debug = false;
   if (debug) std::cout << " -------------------------------- HERE Cwiczenie::analyze "<< std::endl;
   const vector<pat::Muon> & muons = ev.get(theMuonToken);
   const vector<pat::PackedCandidate> & candidates = ev.get(theCandidateToken);
@@ -159,27 +179,75 @@ void Analysis::analyze(
       reco::Vertex vjp(TransientVertex(kvf.vertex(trackTTs)));
       double prob = TMath::Prob(vjp.chi2(),vjp.ndof());
       ROOT::Math::PxPyPzEVector lm2(lorentzVector(im2->momentum(), muonMass));
-      ROOT::Math::PxPyPzEVector ljp=lm1+lm2;
+      ROOT::Math::PxPyPzEVector lmm=lm1+lm2;
       if(debug) { 
         std::cout <<" fitted vertex: "<<vjp.position()<<" prob.: "<<prob<<std::endl;
         std::cout <<" lm1: "<<lm1.E()<<" "<<lm1.mass()<<std::endl;
         std::cout <<" lm2: "<<lm2.E()<<" "<<lm2.mass()<<std::endl;
-        std::cout <<" ljp: "<<ljp.E()<<" "<<ljp.mass()<<std::endl;
+        std::cout <<" lmm: "<<lmm.E()<<" "<<lmm.mass()<<std::endl;
       }
-      if (prob>0.1) hMjpsi->Fill(ljp.mass());
-      if (fabs(ljp.mass()-jpsiMass)>0.06) continue;
+      if (prob<0.1) continue;
+      hMjpsi->Fill(lmm.mass());
+      if (fabs(lmm.mass()-jpsiMass)>0.15) continue;
+
+      // rescale muom momenta for exact jpsi mass
+      double alpha=1.;
+      math::XYZVector mom1 = im1->momentum();
+      math::XYZVector mom2 = im2->momentum();
+      {
+        double a = mom1.mag2()*mom2.mag2()-sqr(mom1.Dot(mom2));
+        double b = -sqr(jpsiMass)*mom1.Dot(mom2)+sqr(muonMass)*(mom1+mom2).mag2();
+        double c = -sqr(jpsiMass)*(sqr(jpsiMass)/4.-sqr(muonMass));
+        double delta= sqr(b)-4*a*c;
+        alpha = sqrt((-b+sqrt(delta))/2./a);
+      } 
+      if (debug) {
+        ROOT::Math::PxPyPzEVector lm1p(lorentzVector(mom1*alpha, muonMass));
+        ROOT::Math::PxPyPzEVector lm2p(lorentzVector(mom2*alpha, muonMass));
+        std::cout <<" mumu mass: "<<lmm.mass()<<" rescaled mumu wrt jpsi"<< (lm1p+lm2p).mass()-jpsiMass<<" alpha: "<<alpha<<std::endl;
+      }  
+      ROOT::Math::PxPyPzEVector ljp(lorentzVector((mom1+mom2)*alpha, jpsiMass));
+
+      if (ljp.pt()<8) continue;
       for (std::vector<pat::PackedCandidate>::const_iterator ic1 = candidates.begin(); ic1 < candidates.end(); ic1++) {
-        if( abs(ic1->pdgId()) != 211 || !ic1->hasTrackDetails() || ic1->pt() < 1. || ic1->charge()==0 ) continue;
+        if( abs(ic1->pdgId()) != 211 || !ic1->hasTrackDetails() || ic1->pt() < 2. || ic1->charge()==0 ) continue;
         //reco::TrackRef mu1Ref = im1->get<reco::TrackRef>();
         const reco::Track & trk1 = ic1->pseudoTrack();
         if (fabs(vjp.position().z()- trk1.vz())>0.3)continue;
         trackTTs.push_back(trackBuilder.build(trk1));
         reco::Vertex vBpm(TransientVertex(kvf.vertex(trackTTs)));
         double probBpm = TMath::Prob(vBpm.chi2(),vBpm.ndof());  
-        ROOT::Math::PxPyPzEVector lc1(lorentzVector(ic1->momentum(), kaonMass));
-        ROOT::Math::PxPyPzEVector lBpm = ljp+lc1;
-        if (debug) std::cout<<" candidate: prob:"<<probBpm<<" mass: "<<lBpm.mass()<<std::endl;
-        if (probBpm>0.1) hMBpm->Fill(lBpm.mass());
+        if (probBpm<0.15) continue;
+        
+        ROOT::Math::PxPyPzEVector lcK(lorentzVector(ic1->momentum(), kaonMass));
+        ROOT::Math::PxPyPzEVector lBpm = ljp+lcK;
+        if (lBpm.pt()<10) continue;
+        hMBpm->Fill(lBpm.mass());
+        hMBpm_mm->Fill((lmm+lcK).mass());
+        hTest1->Fill((ROOT::Math::PxPyPzEVector(lorentzVector(ic1->momentum(),protonMass))+ljp).mass());
+        ROOT::Math::PxPyPzEVector lpi1(lorentzVector(ic1->momentum(), pionMass));
+        ROOT::Math::PxPyPzEVector lX=lpi1+ljp;
+        hTest2->Fill(lX.mass());
+
+//      double massBpm = sqrt( sqr(ljp2.E()+lc1.E())-sqr(ljp2.px()+lc1.px())-sqr(ljp2.py()+lc1.py())-sqr(ljp2.pz()+lc1.pz()));
+//      if (debug) std::cout<<" candidate: prob:"<<probBpm<<" mass: "<<lBpm.mass()<<" vs: "<<massBpm<<std::endl;
+        if (fabs(lX.mass()-4.38)<0.04) {
+          for (std::vector<pat::PackedCandidate>::const_iterator ic2 = ic1+1; ic2 < candidates.end(); ic2++) {
+            if(abs(ic2->pdgId()) != 211 || !ic2->hasTrackDetails() || ic2->pt() < 1. || ic2->charge()==0 ) continue;
+            if( ic1->charge()*ic2->charge() >= 0) continue;
+            const reco::Track & trk2 = ic2->pseudoTrack();
+            if (fabs(vjp.position().z()- trk2.vz())>0.3)continue;
+            std::vector<reco::TransientTrack> tracks4=trackTTs;
+            tracks4.push_back(trackBuilder.build(trk2));
+            reco::Vertex vtx4(TransientVertex(kvf.vertex(tracks4)));
+            if (TMath::Prob(vtx4.chi2(),vtx4.ndof())<0.1) continue;  
+            ROOT::Math::PxPyPzEVector lpi2(lorentzVector(trk2.momentum(), pionMass));
+            ROOT::Math::PxPyPzEVector lLam=ljp+lpi1+lpi2;
+            hTest3->Fill(lLam.mass());
+            hMLam->Fill((lpi1+lpi2).mass());
+          }
+        }
+        
       }
     }
   }
