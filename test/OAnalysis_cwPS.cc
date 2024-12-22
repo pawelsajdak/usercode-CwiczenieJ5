@@ -93,7 +93,7 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; Minv; #events",1000, 0., 12.);
+  histo =new TH1D("histo","test; X; #events",10, 0., 10.);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -116,29 +116,12 @@ void Analysis::analyze(
 //  const vector<pat::PackedCandidate> & candidates = ev.get(theCandidateToken);
 
   if (debug) std::cout <<" number of      muons: " << muons.size() <<std::endl;
- 
 
   //std::vector< std::pair<reco::TransientTrack, reco::TransientTrack> > jpsis;
   for (std::vector<pat::Muon>::const_iterator im1 = muons.begin(); im1 < muons.end(); im1++) {
     const pat::Muon & muon = *im1;
-    if(muon.pt()>3){
-      for (std::vector<pat::Muon>::const_iterator im2 = im1; im2 < muons.end(); im2++) {
-        const pat::Muon & muon2 = *im2;
-        if(muon2.pt()>3 && muon.charge()*muon2.charge()==-1){
-          ROOT::Math::PxPyPzEVector Lvector(muon.p4());
-          Lvector += muon2.p4();
-          histo->Fill(Lvector.M());
-          cout << Lvector.M() << "\t";
-        }
-      } 
-    }
-    /*
-    histo->Fill(muon.et());
-    cout << muon.charge() << "\t";
-    */
+    histo->Fill(muon.eta());
   }
-  cout << "\n";
-
 
   if (debug) cout <<"*** Analyze event: " << ev.id()<<" analysed event count:"<<++theEventCount << endl;
 }
