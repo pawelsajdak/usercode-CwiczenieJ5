@@ -19,11 +19,11 @@ dir=subprocess.Popen(lsCommand, stdout=subprocess.PIPE,shell=True,text=True)
 lsOutput=dir.communicate()[0]
 files=[]
 for f in lsOutput.split():
-  print(dataDir+f)
+  #print(dataDir+f)
   files.append(dataDir+f)
 print ('number of files: ',len(files))
 
-nJobs = 10
+nJobs = 216
 maxRunningJobs = 6 
 files_splitted = np.array_split(files, nJobs)
 print ('number of files: ',len(files),', submitting in', nJobs,' jobs, max running jobs: ',maxRunningJobs)
