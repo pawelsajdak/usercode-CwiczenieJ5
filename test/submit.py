@@ -34,7 +34,7 @@ for fs in range(nJobs):
 
   print ('nRunning is:', checkRunning(myProc),' submitting job number:',fs,'\n', files_splitted[fs])
   jobId =str(fs).zfill(3)
-  execCommand = ['cmsRun','../analysis_cwPSjob.py', jobId, str(files_splitted[fs]).strip('[]')]
+  execCommand = ['cmsRun','./analysis_cwPSjob.py', jobId, str(files_splitted[fs]).strip('[]')]
   print ('execCommand #',fs,' is: ', execCommand)
   p=subprocess.Popen(execCommand,stdout=open('out_'+jobId+'.txt','w'), stderr=subprocess.STDOUT)
   subprocess.run(['sleep','5'])
