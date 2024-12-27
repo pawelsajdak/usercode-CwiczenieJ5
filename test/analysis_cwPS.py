@@ -11,7 +11,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1)
 process.MessageLogger.suppressWarning  = cms.untracked.vstring('Geometry','AfterSource','L1T')
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 
-'''
+
 dataDir='/scratch_cmsse/konec/data/2023D_ParkingDoubleMuonLowMass/'
 lsCommand='ls -1 '+dataDir+'|grep root'
 print ('command: ',lsCommand)
@@ -22,19 +22,20 @@ for f in lsOutput.split():
   print ('file:'+dataDir+f)
   files.append('file:'+dataDir+f)
 
-print (files)
+#print (files)
 print (len(files))
-'''  
+ 
 
 # input files (up to 255 files accepted)
 process.source = cms.Source('PoolSource',
   fileNames = cms.untracked.vstring(
-    'file:data.root',
+    #'file:data.root',
+    files
   ),
 )
 #process.source.fileNames = files
 process.source.skipEvents = cms.untracked.uint32(0)
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(2000))
 
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('Configuration.Geometry.GeometryDB_cff')
