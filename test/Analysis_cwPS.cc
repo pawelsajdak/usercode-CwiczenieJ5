@@ -125,10 +125,10 @@ void Analysis::analyze(
       for (std::vector<pat::Muon>::const_iterator im2 = im1; im2 < muons.end(); im2++) {
         const pat::Muon & muon2 = *im2;
         if(muon2.pt()>3 && muon.charge()*muon2.charge()==-1){
-          ROOT::Math::PxPyPzEVector Lvector(muon.p4());
-          Lvector += muon2.p4();
-          histo->Fill(Lvector.M());
-          cout << Lvector.M() << "\t";
+          ROOT::Math::PxPyPzEVector twomuons(muon.p4());
+          twomuons += muon2.p4();
+          histo->Fill(twomuons.M());
+          cout << twomuons.M() << "\t";
         }
       } 
     }
