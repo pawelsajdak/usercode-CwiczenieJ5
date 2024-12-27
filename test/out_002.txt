@@ -1,0 +1,7 @@
+----- Begin Fatal Exception 27-Dec-2024 16:55:10 CET-----------------------
+An exception of category 'StdException' occurred while
+   [0] Processing the python configuration file named ../analysis_cwPSjob.py
+Exception Message:
+A std::exception was thrown.
+File "../analysis_cwPSjob.py" could not be opened!
+----- End Fatal Exception -------------------------------------------------
