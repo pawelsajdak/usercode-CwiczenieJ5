@@ -2,20 +2,28 @@
 
 import sys
 import math
-from ROOT import *
+import ROOT as r
 
 
 print ("Hello ROOT")
-c1 = TCanvas('cHisto','cHisto',600,600)
+
+fileName = "histos_000.root"
+histo = r.TH1D("histo")
+r.gROOT.Reset()
+f = r.TFile(fileName)
+histo = r.TH1D(r.gROOT.FindObject('histo'))
 
 
-for j in range(0, 216):
+for j in range(1, 216):
     fileName = 'histos_{:03d}.root'.format(j)
     print ('Read data from: ', fileName)
-    gROOT.Reset()
-    f = TFile(fileName);
-    histo = gROOT.FindObject('histo')
-    histo.Draw("same")
-    
+    r.gROOT.Reset()
+    f = r.TFile(fileName);
+    histo2 = r.TH1D(r.gROOT.FindObject('histo'))
+    histo.Add(histo2)
+
+
+c1 = r.TCanvas('cHisto','cHisto',600,600)
+histo.Draw()
 c1.Print("histo.pdf")
 input('press enter to exit')
