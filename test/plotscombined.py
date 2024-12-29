@@ -6,19 +6,14 @@ import ROOT as r
 
 
 print ("Hello ROOT")
-
-fileName = "histos_000.root"
-histo = r.TH1D("histo")
-r.gROOT.Reset()
-f = r.TFile(fileName)
-histo = r.TH1D(r.gROOT.FindObject('histo'))
+histo = r.TH1D("histo","Title",1000, 0., 12.)
 
 
-for j in range(1, 216):
+for j in range(0, 216):
     fileName = 'histos_{:03d}.root'.format(j)
     print ('Read data from: ', fileName)
     r.gROOT.Reset()
-    f = r.TFile(fileName);
+    f = r.TFile(fileName)
     histo2 = r.TH1D(r.gROOT.FindObject('histo'))
     histo.Add(histo2)
 
