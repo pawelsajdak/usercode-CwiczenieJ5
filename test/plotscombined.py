@@ -17,8 +17,10 @@ for j in range(0, 216):
     histo2 = r.TH1D(r.gROOT.FindObject('histo'))
     histo.Add(histo2)
 
-
+r.gROOT.Reset()
 c1 = r.TCanvas('cHisto','cHisto',600,600)
 histo.Draw()
 c1.Print("histo.pdf")
+f2 = r.TFile("fullhistogram.root", "recreate")
+histo.Write()
 input('press enter to exit')
