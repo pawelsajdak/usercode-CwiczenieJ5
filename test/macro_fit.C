@@ -13,6 +13,20 @@ Double_t fitFunction(Double_t *x, Double_t *par){
     return background(x, par) + peak(x, &par[3]);
 }
 
-void macro_fit(){
+int macro_fit(Double_t xmin, Double_t xmax){
     cout << "I am working" << endl;
+    //gDirectory->pwd();
+    TFile f("fullhistogram.root", "UPDATE");
+    cout << "file opened" << endl;
+    TH1D* myhisto = (TH1D*)f.Get("histo");
+    f.Close();
+    //gDirectory->pwd();
+
+    Double_t par[6];
+    //TF1* fitFun = new TF1("fitFun",fitFunction,xmin,xmax,6);
+    return 0;
+    /*
+    histo->Fit("fitFun");
+    f.Close();
+    */
 }
