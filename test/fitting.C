@@ -22,5 +22,4 @@ Double_t fitFunction(Double_t *x, Double_t *par){
 
 void fitting(){
     cout << "Hello" << endl;
-    new TCanvas;
 }
