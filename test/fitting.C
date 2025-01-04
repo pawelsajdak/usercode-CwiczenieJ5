@@ -1,6 +1,8 @@
 #include "TMath.h"
-#include "TFile.h"
-#include "TCanvas.h"
+//#include "TFile.h"
+//#include "TCanvas.h"
+#include "TF1.h"
+#include "TH1.h"
 
 #include <iostream>
 using namespace std;
@@ -20,6 +22,11 @@ Double_t fitFunction(Double_t *x, Double_t *par){
     return background(x, par) + peak(x, &par[3]);
 }
 
-void fitting(){
-    cout << "Hello" << endl;
+int fitting(TH1D* histo){
+    Double_t par[6];
+    TF1 *fitFcn = new TF1("fitFcn",fitFunction,6.,10.,6);
+    fitFcn->SetParameter(1,9.5);
+    histo->Fit("fitFcn");
+
+    return 0;
 }
