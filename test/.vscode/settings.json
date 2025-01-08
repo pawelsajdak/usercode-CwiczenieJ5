@@ -2,6 +2,7 @@
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
         "macro_fit.C": "cpp",
-        "fitting.C": "cpp"
+        "fitting.C": "cpp",
+        "dfsfs.C": "cpp"
     }
 }

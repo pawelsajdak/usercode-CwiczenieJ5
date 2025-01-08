@@ -1,0 +1,10 @@
+{
+  "LIB": [
+    "boost_serialization"
+  ],
+  "TOOLNAME": "boost_serialization",
+  "TOOLVERSION": "1.80.0-b79e213ec0a1ebc461b2ab89a8dc27aa",
+  "USE": [
+    "boost"
+  ]
+}

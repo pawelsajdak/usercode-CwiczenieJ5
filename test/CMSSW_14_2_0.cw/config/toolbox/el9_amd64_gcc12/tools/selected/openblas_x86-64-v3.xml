@@ -1,0 +1,6 @@
+<tool name="openblas_x86-64-v3" version="0.3.27-b720817264f99ac59151b934c5fe8966">
+  <client>
+    <environment name="X86_64_V3_LIBDIR" default="/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/OpenBLAS_x86-64-v3/0.3.27-b720817264f99ac59151b934c5fe8966/lib"/>
+    <environment name="X86_64_V3_BINDIR" default="/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/OpenBLAS_x86-64-v3/0.3.27-b720817264f99ac59151b934c5fe8966/bin"/>
+  </client>
+</tool>

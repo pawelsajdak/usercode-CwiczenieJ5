@@ -1,0 +1,10 @@
+{
+  "LIB": [
+    "platform-dependent"
+  ],
+  "TOOLNAME": "dip-platform-dependent",
+  "TOOLVERSION": "8693f00cc422b4a15858fcd84249acaeb07b6316-055a94ba83ef432afc3dd4b2ed31172b",
+  "USE": [
+    "dip_interface"
+  ]
+}

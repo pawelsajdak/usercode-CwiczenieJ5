@@ -1,0 +1,10 @@
+<tool name="pytorch-cluster" version="1.6.3-7fdd796eb1c61197c7a6300b253cb3a1">
+  <client>
+    <environment name="PYTORCH_CLUSTER_BASE" default="/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/pytorch-cluster/1.6.3-7fdd796eb1c61197c7a6300b253cb3a1"/>
+    <environment name="INCLUDE" default="$PYTORCH_CLUSTER_BASE/include"/>
+    <environment name="INCLUDE" default="$PYTORCH_CLUSTER_BASE/include/torchcluster/"/>
+    <environment name="LIBDIR" default="$PYTORCH_CLUSTER_BASE/lib"/>
+  </client>
+  <use name="pytorch"/>
+  <lib name="torchcluster"/>
+</tool>

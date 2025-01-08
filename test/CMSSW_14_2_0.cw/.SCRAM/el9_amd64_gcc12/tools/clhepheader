@@ -1,0 +1,34 @@
+{
+  "CLHEPHEADER_BASE": "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/clhep/2.4.7.1-f14ab48632c31ebed848ba837f87e082",
+  "FLAGS": {
+    "ROOTCLING_ARGS": [
+      "-moduleMapFile=$(CLHEP_BASE)/include/module.modulemap"
+    ],
+    "SYSTEM_INCLUDE": [
+      "1"
+    ]
+  },
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/clhep/2.4.7.1-f14ab48632c31ebed848ba837f87e082/include"
+  ],
+  "RUNTIME": {
+    "CLHEP_PARAM_PATH": [
+      "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/clhep/2.4.7.1-f14ab48632c31ebed848ba837f87e082"
+    ],
+    "PATH:CMSSW_FWLITE_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/clhep/2.4.7.1-f14ab48632c31ebed848ba837f87e082/include"
+    ],
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/clhep/2.4.7.1-f14ab48632c31ebed848ba837f87e082/include"
+    ]
+  },
+  "TOOLNAME": "clhepheader",
+  "TOOLVERSION": "2.4.7.1-f14ab48632c31ebed848ba837f87e082",
+  "USE": [
+    "root_cxxdefaults"
+  ],
+  "VARIABLES": [
+    "CLHEPHEADER_BASE",
+    "INCLUDE"
+  ]
+}

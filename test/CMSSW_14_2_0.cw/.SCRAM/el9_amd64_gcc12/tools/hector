@@ -1,0 +1,27 @@
+{
+  "HECTOR_BASE": "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/hector/1.3.4_patch1-c1d17b50c88feb4f25fffcffc539b97b",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/hector/1.3.4_patch1-c1d17b50c88feb4f25fffcffc539b97b/include"
+  ],
+  "LIB": [
+    "Hector"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/hector/1.3.4_patch1-c1d17b50c88feb4f25fffcffc539b97b/lib"
+  ],
+  "RUNTIME": {
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/hector/1.3.4_patch1-c1d17b50c88feb4f25fffcffc539b97b/include"
+    ]
+  },
+  "TOOLNAME": "hector",
+  "TOOLVERSION": "1.3.4_patch1-c1d17b50c88feb4f25fffcffc539b97b",
+  "USE": [
+    "root_cxxdefaults"
+  ],
+  "VARIABLES": [
+    "HECTOR_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

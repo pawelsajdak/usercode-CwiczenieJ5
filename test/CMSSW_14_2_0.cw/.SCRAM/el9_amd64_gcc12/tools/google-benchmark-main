@@ -1,0 +1,10 @@
+{
+  "LIB": [
+    "benchmark_main"
+  ],
+  "TOOLNAME": "google-benchmark-main",
+  "TOOLVERSION": "1.7.x-90ac41d5b016cd71847760512810304e",
+  "USE": [
+    "google-benchmark"
+  ]
+}

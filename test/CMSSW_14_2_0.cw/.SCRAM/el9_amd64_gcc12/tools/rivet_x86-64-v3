@@ -1,0 +1,13 @@
+{
+  "RUNTIME": {
+    "PATH:X86_64_V3_PATH": [
+      "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/rivet_x86-64-v3/4.0.1-e9e675a4ac9cb809aae0f9dd8a90c6ef/bin"
+    ]
+  },
+  "TOOLNAME": "rivet_x86-64-v3",
+  "TOOLVERSION": "4.0.1-e9e675a4ac9cb809aae0f9dd8a90c6ef",
+  "VARIABLES": [
+    "X86_64_V3_LIBDIR"
+  ],
+  "X86_64_V3_LIBDIR": "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/rivet_x86-64-v3/4.0.1-e9e675a4ac9cb809aae0f9dd8a90c6ef/lib"
+}

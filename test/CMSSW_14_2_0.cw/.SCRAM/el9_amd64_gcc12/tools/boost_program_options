@@ -1,0 +1,10 @@
+{
+  "LIB": [
+    "boost_program_options"
+  ],
+  "TOOLNAME": "boost_program_options",
+  "TOOLVERSION": "1.80.0-b79e213ec0a1ebc461b2ab89a8dc27aa",
+  "USE": [
+    "boost"
+  ]
+}

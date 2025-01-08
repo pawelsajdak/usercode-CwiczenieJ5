@@ -1,0 +1,28 @@
+{
+  "BINDIR": [
+    "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/OpenBLAS/0.3.27-6574458f8642b299ac965c654e194a8b/bin"
+  ],
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/OpenBLAS/0.3.27-6574458f8642b299ac965c654e194a8b/include"
+  ],
+  "LIB": [
+    "openblas"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/OpenBLAS/0.3.27-6574458f8642b299ac965c654e194a8b/lib"
+  ],
+  "OPENBLAS_BASE": "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/OpenBLAS/0.3.27-6574458f8642b299ac965c654e194a8b",
+  "RUNTIME": {
+    "OPENBLAS_NUM_THREADS": [
+      "1"
+    ]
+  },
+  "TOOLNAME": "openblas",
+  "TOOLVERSION": "0.3.27-6574458f8642b299ac965c654e194a8b",
+  "VARIABLES": [
+    "OPENBLAS_BASE",
+    "INCLUDE",
+    "LIBDIR",
+    "BINDIR"
+  ]
+}

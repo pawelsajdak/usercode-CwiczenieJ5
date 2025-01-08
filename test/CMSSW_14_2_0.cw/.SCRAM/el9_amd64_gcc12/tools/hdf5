@@ -1,0 +1,23 @@
+{
+  "HDF5_BASE": "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/hdf5/1.14.1-7cc0d1ebba8f7488b5619b947b006377",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/hdf5/1.14.1-7cc0d1ebba8f7488b5619b947b006377/include"
+  ],
+  "LIB": [
+    "hdf5",
+    "hdf5_hl"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/hdf5/1.14.1-7cc0d1ebba8f7488b5619b947b006377/lib"
+  ],
+  "TOOLNAME": "hdf5",
+  "TOOLVERSION": "1.14.1-7cc0d1ebba8f7488b5619b947b006377",
+  "USE": [
+    "openmpi"
+  ],
+  "VARIABLES": [
+    "HDF5_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

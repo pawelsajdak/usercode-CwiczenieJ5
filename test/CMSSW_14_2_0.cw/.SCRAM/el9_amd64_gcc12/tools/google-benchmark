@@ -1,0 +1,22 @@
+{
+  "GOOGLE_BENCHMARK_BASE": "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/google-benchmark/1.7.x-90ac41d5b016cd71847760512810304e",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/google-benchmark/1.7.x-90ac41d5b016cd71847760512810304e/include"
+  ],
+  "LIB": [
+    "benchmark"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/google-benchmark/1.7.x-90ac41d5b016cd71847760512810304e/lib64"
+  ],
+  "TOOLNAME": "google-benchmark",
+  "TOOLVERSION": "1.7.x-90ac41d5b016cd71847760512810304e",
+  "USE": [
+    "sockets"
+  ],
+  "VARIABLES": [
+    "GOOGLE_BENCHMARK_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

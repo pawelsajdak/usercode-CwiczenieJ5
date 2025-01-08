@@ -1,0 +1,14 @@
+{
+  "LIB": [
+    "RooStats"
+  ],
+  "TOOLNAME": "roostats",
+  "TOOLVERSION": "6.30.09-a471e16c07e14e11bdeeaf6baa56e34c",
+  "USE": [
+    "roofitcore",
+    "roofit",
+    "rootcore",
+    "roothistmatrix",
+    "rootgpad"
+  ]
+}

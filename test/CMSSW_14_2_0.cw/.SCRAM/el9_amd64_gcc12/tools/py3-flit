@@ -1,0 +1,13 @@
+{
+  "PY3_FLIT_BASE": "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/py3-flit/3.9.0-7c8594daa51eed85b29b389cea5e7228",
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/py3-flit/3.9.0-7c8594daa51eed85b29b389cea5e7228/bin"
+    ]
+  },
+  "TOOLNAME": "py3-flit",
+  "TOOLVERSION": "3.9.0-7c8594daa51eed85b29b389cea5e7228",
+  "VARIABLES": [
+    "PY3_FLIT_BASE"
+  ]
+}

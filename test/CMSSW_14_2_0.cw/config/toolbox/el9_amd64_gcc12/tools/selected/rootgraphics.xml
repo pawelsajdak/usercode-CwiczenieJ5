@@ -1,0 +1,7 @@
+<tool name="rootgraphics" version="6.30.09-a471e16c07e14e11bdeeaf6baa56e34c">
+  <info url="http://root.cern.ch/root/"/>
+  <lib name="TreePlayer"/>
+  <lib name="Graf3d"/>
+  <lib name="Postscript"/>
+  <use name="rootgpad"/>
+</tool>

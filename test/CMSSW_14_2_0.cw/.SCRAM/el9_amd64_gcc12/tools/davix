@@ -1,0 +1,28 @@
+{
+  "DAVIX_BASE": "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/davix/0.8.7-79f8490a1e18727420495246c731d756",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/davix/0.8.7-79f8490a1e18727420495246c731d756/include/davix"
+  ],
+  "LIB": [
+    "davix"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/davix/0.8.7-79f8490a1e18727420495246c731d756/lib64"
+  ],
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/davix/0.8.7-79f8490a1e18727420495246c731d756/bin"
+    ]
+  },
+  "TOOLNAME": "davix",
+  "TOOLVERSION": "0.8.7-79f8490a1e18727420495246c731d756",
+  "USE": [
+    "boost_system",
+    "libxml2"
+  ],
+  "VARIABLES": [
+    "DAVIX_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

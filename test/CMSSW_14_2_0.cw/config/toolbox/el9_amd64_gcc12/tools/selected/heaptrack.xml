@@ -1,0 +1,8 @@
+  <tool name="heaptrack" version="1.4.0-c3cf54942d609a34b466c009dd3f8089">
+    <info url="https://invent.kde.org/sdk/heaptrack/"/>
+    <client>
+      <environment name="HEAPTRACK_BASE" default="/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/heaptrack/1.4.0-c3cf54942d609a34b466c009dd3f8089"/>
+      <environment name="LIBDIR" default="$HEAPTRACK_BASE/lib"/>
+    </client>
+    <runtime name="PATH" value="$HEAPTRACK_BASE/bin" type="path"/>
+  </tool>

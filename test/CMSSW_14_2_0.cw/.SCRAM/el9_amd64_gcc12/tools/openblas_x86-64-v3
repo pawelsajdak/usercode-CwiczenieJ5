@@ -1,0 +1,10 @@
+{
+  "TOOLNAME": "openblas_x86-64-v3",
+  "TOOLVERSION": "0.3.27-b720817264f99ac59151b934c5fe8966",
+  "VARIABLES": [
+    "X86_64_V3_LIBDIR",
+    "X86_64_V3_BINDIR"
+  ],
+  "X86_64_V3_BINDIR": "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/OpenBLAS_x86-64-v3/0.3.27-b720817264f99ac59151b934c5fe8966/bin",
+  "X86_64_V3_LIBDIR": "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/OpenBLAS_x86-64-v3/0.3.27-b720817264f99ac59151b934c5fe8966/lib"
+}

@@ -1,0 +1,8 @@
+{
+  "COLLIER_BASE": "/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/collier/1.2.8-d232e194b2b806f15ba5fab9e29fce51",
+  "TOOLNAME": "collier",
+  "TOOLVERSION": "1.2.8-d232e194b2b806f15ba5fab9e29fce51",
+  "VARIABLES": [
+    "COLLIER_BASE"
+  ]
+}
