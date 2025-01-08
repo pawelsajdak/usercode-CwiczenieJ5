@@ -6,7 +6,7 @@ import ROOT as r
 
 
 print ("Hello ROOT")
-histo = r.TH1D("histo","Title",1000, 0., 12.)
+histo = r.TH1D("histo","Title",100000, 0., 100.)
 
 
 for j in range(0, 216):
@@ -21,6 +21,6 @@ r.gROOT.Reset()
 c1 = r.TCanvas('cHisto','cHisto',600,600)
 histo.Draw()
 c1.Print("histo.pdf")
-f2 = r.TFile("fullhistogram.root", "recreate")
+f2 = r.TFile("fullhistogram2.root", "recreate")
 histo.Write()
 input('press enter to exit')
