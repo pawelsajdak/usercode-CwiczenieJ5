@@ -93,7 +93,7 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; Minv; #events",1000, 0., 12.);
+  histo =new TH1D("histo","test; Minv; #events",100000, 0., 100.);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -121,10 +121,10 @@ void Analysis::analyze(
   //std::vector< std::pair<reco::TransientTrack, reco::TransientTrack> > jpsis;
   for (std::vector<pat::Muon>::const_iterator im1 = muons.begin(); im1 < muons.end(); im1++) {
     const pat::Muon & muon = *im1;
-    if(muon.pt()>3){
+    if(muon.pt()>3 && muon.eta()<2.4){
       for (std::vector<pat::Muon>::const_iterator im2 = im1; im2 < muons.end(); im2++) {
         const pat::Muon & muon2 = *im2;
-        if(muon2.pt()>3 && muon.charge()*muon2.charge()==-1){
+        if(muon2.pt()>3 && muon2.eta()<2.4 && muon.charge()*muon2.charge()==-1){
           ROOT::Math::PxPyPzEVector twomuons(muon.p4());
           twomuons += muon2.p4();
           histo->Fill(twomuons.M());
