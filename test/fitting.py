@@ -1,6 +1,4 @@
 import ROOT as r
-import sys
-import os
 
 import numpy as np
 
@@ -10,11 +8,17 @@ class FitFunc:
     # polynomial background + Gaussian peak
     # par[4] - peak position
 
+file = r.TFile("fullhistogram.root")
+histo = file.Get('histo')
+
 t = FitFunc()
-func = r.TF1('func',t,-2.,3.,6)
-func.SetParameters(5.,0.,0.,0.,5.,6.)
+func = r.TF1('func',t,0.,20.,6)
+func.SetParameters(30000.,1.,1.,700000.,3.,0.01)
+
+histo.Fit(func,"","",2.5,3.5)
+print(histo.GetArray())
 
 c = r.TCanvas()
-func.Draw()
-c.Print('canvas.pdf')
-
+histo.Draw()
+c.Print('canvas2.pdf')
+input('press enter to exit')
