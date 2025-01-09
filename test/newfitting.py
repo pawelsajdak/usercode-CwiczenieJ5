@@ -5,7 +5,7 @@ peakname = "eta"
 xmin = 0.5
 xmax = 0.6
 par0 = 30.e3
-axmin = 0.
+axmin = 0.2
 axmax = 1.5
 
 ##########################################
@@ -25,7 +25,12 @@ with open('results.txt', 'a') as of:
 #'''
 canvas = r.TCanvas("canvas")
 canvas.cd()
+canvas.SetLogy(True)
+
 histo.SetAxisRange(axmin, axmax)
+histo.SetTitle(peakname+"\t {:.6f}".format(fitFunc.GetParameter(1))+"; Minv; #events")
+histo.SetStats(0)
 histo.Draw("h")
+
 canvas.Print("fit_"+peakname+".pdf")
 input('press enter to exit')
