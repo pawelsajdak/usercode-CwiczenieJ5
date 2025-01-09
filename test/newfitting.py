@@ -1,12 +1,12 @@
 import ROOT as r
 import sys
 
-peakname = "eta"
-xmin = 0.5
-xmax = 0.6
-par0 = 30.e3
-axmin = 0.2
-axmax = 1.5
+peakname = "Y(3S)"
+xmin = 10.2
+xmax = 10.5
+par0 = 10.e3
+axmin = 8.
+axmax = 12.
 
 ##########################################
 histfilename = "fullhistogram.root"
@@ -28,7 +28,7 @@ canvas.cd()
 canvas.SetLogy(True)
 
 histo.SetAxisRange(axmin, axmax)
-histo.SetTitle(peakname+"\t {:.6f}".format(fitFunc.GetParameter(1))+"; Minv; #events")
+histo.SetTitle(peakname+"\t {:.3f}".format(fitFunc.GetParameter(1))+"; Minv; #events")
 histo.SetStats(0)
 histo.Draw("h")
 
