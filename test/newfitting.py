@@ -1,11 +1,12 @@
+#!/cvmfs/cms.cern.ch/el9_amd64_gcc12/cms/cmssw/CMSSW_14_0_2/external/el9_amd64_gcc12/bin/python3
 import ROOT as r
 import sys
 
-peakname = "Y(3S)"
-xmin = 10.2
-xmax = 10.5
-par0 = 10.e3
-axmin = 8.
+peakname = "Jpsi"
+xmin = 2.5
+xmax = 3.4
+par0 = 10.e5
+axmin = 0.
 axmax = 12.
 
 ##########################################
@@ -18,11 +19,12 @@ histfile.Close()
 expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2)) + [3]+x*[4]+x*x*[5]"
 fitFunc = r.TF1("fitFunc",expression,xmin,xmax)
 fitFunc.SetParameters(par0,(xmin+xmax)/2,0.1,1.,1.,1.)
+fitFunc.FixParameter(5,0.)
 results = histo.Fit(fitFunc,"ERS")
-#'''
-with open('results.txt', 'a') as of:
+'''
+with open('results2.txt') as of:
     print(peakname,"\t",fitFunc.GetParameter(1),"\n", results, file=of)
-#'''
+'''
 canvas = r.TCanvas("canvas")
 canvas.cd()
 canvas.SetLogy(True)
@@ -32,5 +34,5 @@ histo.SetTitle(peakname+"\t {:.3f}".format(fitFunc.GetParameter(1))+"; Minv; #ev
 histo.SetStats(0)
 histo.Draw("h")
 
-canvas.Print("fit_"+peakname+".pdf")
+canvas.Print("fi_"+peakname+".pdf")
 input('press enter to exit')
