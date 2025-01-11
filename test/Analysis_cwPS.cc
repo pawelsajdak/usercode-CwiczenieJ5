@@ -26,6 +26,7 @@
 #include "TH2D.h"
 #include "TFile.h"
 #include "TMath.h"
+#include "TNtupleD.h"
 #include <Math/Vector4D.h>
 
 #include <sstream>
@@ -70,8 +71,8 @@ private:
   edm::ParameterSet theConfig;
   bool debug;
   unsigned int theEventCount;
-  TH1D *histo;
-
+  //TH1D *histo;
+  TNtupleD *mytuple;
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
 
 };
@@ -93,18 +94,21 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; Minv; #events",100000, 0., 100.);
+  //histo =new TH1D("histo","test; Minv; #events",100000, 0., 100.);
+  mytuple = new TNtupleD("mytuple","Ntuple","Charge1:Pt1:Pz1:Charge2:Pt2:Pz2");
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
 void Analysis::endJob()
 {
   //make a new Root file
-  TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
+  TFile myRootFile( theConfig.getParameter<std::string>("outTuple").c_str(), "RECREATE");
   //write histogram data
-  histo->Write();
+  //histo->Write();
+  mytuple->Write();
   myRootFile.Close();
-  delete histo;
+  //delete histo;
+  delete mytuple;
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
@@ -121,26 +125,28 @@ void Analysis::analyze(
   //std::vector< std::pair<reco::TransientTrack, reco::TransientTrack> > jpsis;
   for (std::vector<pat::Muon>::const_iterator im1 = muons.begin(); im1 < muons.end(); im1++) {
     const pat::Muon & muon = *im1;
-    if(muon.pt()>3 && muon.eta()<2.4){
+    //if(muon.pt()>3 && muon.eta()<2.4){
       for (std::vector<pat::Muon>::const_iterator im2 = im1; im2 < muons.end(); im2++) {
         const pat::Muon & muon2 = *im2;
-        if(muon2.pt()>3 && muon2.eta()<2.4 && muon.charge()*muon2.charge()==-1){
+        /*if(muon2.pt()>3 && muon2.eta()<2.4 && muon.charge()*muon2.charge()==-1){
           ROOT::Math::PxPyPzEVector twomuons(muon.p4());
           twomuons += muon2.p4();
           histo->Fill(twomuons.M());
           cout << twomuons.M() << "\t";
-        }
+        */
+       mytuple->Fill((double)muon.charge(),muon.pt(),muon.pz(),(double)muon2.charge(),muon2.pt(),muon2.pz());
+       }
       } 
-    }
+    //}
     /*
     histo->Fill(muon.et());
     cout << muon.charge() << "\t";
     */
-  }
-  cout << "\n";
+  
+  std::cout << "\n";
 
 
-  if (debug) cout <<"*** Analyze event: " << ev.id()<<" analysed event count:"<<++theEventCount << endl;
+  if (debug) std::cout <<"*** Analyze event: " << ev.id()<<" analysed event count:"<<++theEventCount << endl;
 }
 
 DEFINE_FWK_MODULE(Analysis);
