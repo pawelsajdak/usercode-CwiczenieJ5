@@ -73,7 +73,7 @@ private:
   TH1D *histo;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
-
+  edm::EDGetTokenT< vector<pat::PackedCandidate> > theCandidateToken;
 };
 
 
@@ -82,6 +82,7 @@ Analysis::Analysis(const edm::ParameterSet& conf)
 {
   cout <<" CTORXX" << endl;
   theMuonToken = consumes< vector<pat::Muon> >( theConfig.getParameter<edm::InputTag>("muonSrc"));
+  theCandidateToken     = consumes< vector<pat::PackedCandidate> > (edm::InputTag("packedPFCandidates"));
   if(theConfig.exists("debug")) debug = theConfig.getParameter<bool>("debug"); 
 }
 
@@ -108,35 +109,29 @@ void Analysis::endJob()
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
-void Analysis::analyze(
-    const edm::Event& ev, const edm::EventSetup& es)
+void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
 {
   if (debug) std::cout << " -------------------------------- HERE Cwiczenie::analyze "<< std::endl;
   const vector<pat::Muon> & muons = ev.get(theMuonToken);
-//  const vector<pat::PackedCandidate> & candidates = ev.get(theCandidateToken);
+  const vector<pat::PackedCandidate> & candidates = ev.get(theCandidateToken);
 
   if (debug) std::cout <<" number of      muons: " << muons.size() <<std::endl;
  
-
   //std::vector< std::pair<reco::TransientTrack, reco::TransientTrack> > jpsis;
-  for (std::vector<pat::Muon>::const_iterator im1 = muons.begin(); im1 < muons.end(); im1++) {
+  for (std::vector<pat::Muon>::const_iterator im1 = muons.begin(); im1 < muons.end(); im1++)
+  {
     const pat::Muon & muon = *im1;
-    if(muon.pt()>3 && muon.eta()<2.4){
-      for (std::vector<pat::Muon>::const_iterator im2 = im1; im2 < muons.end(); im2++) {
-        const pat::Muon & muon2 = *im2;
-        if(muon2.pt()>3 && muon2.eta()<2.4 && muon.charge()*muon2.charge()==-1){
-          ROOT::Math::PxPyPzEVector twomuons(muon.p4());
-          twomuons += muon2.p4();
-          histo->Fill(twomuons.M());
-          cout << twomuons.M() << "\t";
-        }
-      } 
+    if(muon.pt()<3) continue;
+    for (std::vector<pat::Muon>::const_iterator im2 = im1; im2 < muons.end(); im2++)
+    {
+      const pat::Muon & muon2 = *im2;
+      if(muon2.pt()<3 || muon.charge()*muon2.charge()!=-1) continue;
+      ROOT::Math::PxPyPzEVector twomuons = im1->p4()+im2->p4();
     }
-    /*
-    histo->Fill(muon.et());
-    cout << muon.charge() << "\t";
-    */
-  }
+  } 
+    
+   
+  
   cout << "\n";
 
 
