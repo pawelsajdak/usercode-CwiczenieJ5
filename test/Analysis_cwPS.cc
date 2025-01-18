@@ -94,7 +94,7 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; Minv; #events",100000, 0., 100.);
+  histo =new TH1D("histo","test; Minv; #events",1000, -0.3, 0.3);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -126,7 +126,10 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
     {
       const pat::Muon & muon2 = *im2;
       if(muon2.pt()<3 || muon.charge()*muon2.charge()!=-1) continue;
-      ROOT::Math::PxPyPzEVector twomuons = im1->p4()+im2->p4();
+      ROOT::Math::PxPyPzEVector twomuons = muon.p4()+muon2.p4();
+
+      if(fabs(twomuons.M()-jpsiMass)>0.3) continue;
+      histo->Fill(jpsiMass-twomuons.M());
     }
   } 
     
