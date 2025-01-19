@@ -94,7 +94,7 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; Minv; #events",1000, -0.3, 0.3);
+  histo =new TH1D("histo","test; Minv; #events",1000, 3., 8.);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -122,14 +122,20 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
   {
     const pat::Muon & muon = *im1;
     if(muon.pt()<3) continue;
-    for (std::vector<pat::Muon>::const_iterator im2 = im1; im2 < muons.end(); im2++)
+    for (std::vector<pat::Muon>::const_iterator im2 = im1+1; im2 < muons.end(); im2++)
     {
       const pat::Muon & muon2 = *im2;
       if(muon2.pt()<3 || muon.charge()*muon2.charge()!=-1) continue;
-      ROOT::Math::PxPyPzEVector twomuons = muon.p4()+muon2.p4();
-
-      if(fabs(twomuons.M()-jpsiMass)>0.3) continue;
-      histo->Fill(jpsiMass-twomuons.M());
+      ROOT::Math::PxPyPzEVector lMuonsVector = muon.p4()+muon2.p4();
+      //Minv of two muons close to the J/psi peak
+      if(fabs(lMuonsVector.M()-jpsiMass)>0.03) continue;
+      for (std::vector<pat::PackedCandidate>::const_iterator ic1 = candidates.begin(); ic1 < candidates.end(); ic1++) 
+      {
+        if( abs(ic1->pdgId()) != 211 || !ic1->hasTrackDetails() || ic1->pt() < 2. || ic1->charge()<1 ) continue;
+        ROOT::Math::PxPyPzEVector lCandVector = ic1->p4();
+        ROOT::Math::PxPyPzEVector lFullVector = lMuonsVector+lorentzVector(lCandVector, kaonMass);
+        histo->Fill(lFullVector.M());
+      }  
     }
   } 
     
