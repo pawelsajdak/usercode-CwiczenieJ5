@@ -8,3 +8,276 @@ Found 1 device:
 20-Jan-2025 21:35:19 CET  Successfully opened file file:/scratch_cmsse/konec/data/2023D_ParkingDoubleMuonLowMass/0419eec5-0ae4-4732-8f06-6d72dd25a149.root
  CTORXX
 HERE Analysis::beginJob()
+%MSG-s NewIOV:  PostStreamBeginRun 20-Jan-2025 21:35:22 CET PostStreamBeginRun
+Fetched new IOV for 'SiPixelQuality_v07_offline' request interval [ 1590598188400664 , 1590658317942818 ] new range [ 1590598188400664 , 1590658317942817 ] #entries 91
+%MSG
+Begin processing the 1st record. Run 370340, Event 10345112, LumiSection 24 on stream 0 at 20-Jan-2025 21:35:22.173 CET
+
+Begin processing the 2nd record. Run 370340, Event 10343968, LumiSection 24 on stream 0 at 20-Jan-2025 21:35:23.149 CET
+
+Begin processing the 3rd record. Run 370340, Event 10344888, LumiSection 24 on stream 0 at 20-Jan-2025 21:35:23.152 CET
+
+Begin processing the 4th record. Run 370340, Event 10342840, LumiSection 24 on stream 0 at 20-Jan-2025 21:35:23.155 CET
+
+Begin processing the 5th record. Run 370340, Event 10344616, LumiSection 24 on stream 0 at 20-Jan-2025 21:35:23.158 CET
+
+Begin processing the 6th record. Run 370340, Event 10343840, LumiSection 24 on stream 0 at 20-Jan-2025 21:35:23.168 CET
+
+%MSG-s NewIOV:  PostModuleEvent 20-Jan-2025 21:35:23 CET PostProcessEvent
+Fetched new IOV for 'BeamSpotObjects_Run3_LumiBased_v2' request interval [ 1590598188400665 , 1590658317942819 ] new range [ 1590598188400665 , 1590658317942818 ] #entries 39
+%MSG
+Begin processing the 7th record. Run 370340, Event 10692792, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.242 CET
+
+Begin processing the 8th record. Run 370340, Event 11201680, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.246 CET
+
+Begin processing the 9th record. Run 370340, Event 11011992, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.263 CET
+
+Begin processing the 10th record. Run 370340, Event 11075824, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.269 CET
+
+Begin processing the 11th record. Run 370340, Event 10833224, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.271 CET
+
+Begin processing the 12th record. Run 370340, Event 10966368, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.274 CET
+
+Begin processing the 13th record. Run 370340, Event 11353064, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.285 CET
+
+Begin processing the 14th record. Run 370340, Event 10800384, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.288 CET
+
+Begin processing the 15th record. Run 370340, Event 10782154, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.290 CET
+
+Begin processing the 16th record. Run 370340, Event 11283749, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.295 CET
+
+Begin processing the 17th record. Run 370340, Event 10829584, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.303 CET
+
+Begin processing the 18th record. Run 370340, Event 10659960, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.308 CET
+
+Begin processing the 19th record. Run 370340, Event 10880656, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.311 CET
+
+Begin processing the 20th record. Run 370340, Event 10576040, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.316 CET
+
+Begin processing the 21st record. Run 370340, Event 11413262, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.324 CET
+
+Begin processing the 22nd record. Run 370340, Event 10789464, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.354 CET
+
+Begin processing the 23rd record. Run 370340, Event 11269151, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.357 CET
+
+Begin processing the 24th record. Run 370340, Event 10751144, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.362 CET
+
+Begin processing the 25th record. Run 370340, Event 10599760, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.370 CET
+
+Begin processing the 26th record. Run 370340, Event 10917128, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.376 CET
+
+Begin processing the 27th record. Run 370340, Event 11121416, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.378 CET
+
+Begin processing the 28th record. Run 370340, Event 10534104, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.389 CET
+
+Begin processing the 29th record. Run 370340, Event 10512200, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.392 CET
+
+Begin processing the 30th record. Run 370340, Event 10581521, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.395 CET
+
+Begin processing the 31st record. Run 370340, Event 10579704, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.406 CET
+
+Begin processing the 32nd record. Run 370340, Event 10758456, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.408 CET
+
+Begin processing the 33rd record. Run 370340, Event 10552328, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.410 CET
+
+Begin processing the 34th record. Run 370340, Event 10357152, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.415 CET
+
+Begin processing the 35th record. Run 370340, Event 10523152, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.425 CET
+
+Begin processing the 36th record. Run 370340, Event 11037508, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.427 CET
+
+Begin processing the 37th record. Run 370340, Event 10707360, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.429 CET
+
+Begin processing the 38th record. Run 370340, Event 10504912, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.432 CET
+
+Begin processing the 39th record. Run 370340, Event 10497600, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.443 CET
+
+Begin processing the 40th record. Run 370340, Event 11362188, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.445 CET
+
+Begin processing the 41st record. Run 370340, Event 11239276, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.447 CET
+
+Begin processing the 42nd record. Run 370340, Event 11260054, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.449 CET
+
+Begin processing the 43rd record. Run 370340, Event 11214446, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.463 CET
+
+Begin processing the 44th record. Run 370340, Event 11377912, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.466 CET
+
+Begin processing the 45th record. Run 370340, Event 10403896, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.469 CET
+
+Begin processing the 46th record. Run 370340, Event 11350537, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.472 CET
+
+Begin processing the 47th record. Run 370340, Event 10518784, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.484 CET
+
+Begin processing the 48th record. Run 370340, Event 11335938, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.487 CET
+
+Begin processing the 49th record. Run 370340, Event 11399784, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.490 CET
+
+Begin processing the 50th record. Run 370340, Event 11403440, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.493 CET
+
+Begin processing the 51st record. Run 370340, Event 10520624, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.507 CET
+
+Begin processing the 52nd record. Run 370340, Event 10971160, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.510 CET
+
+Begin processing the 53rd record. Run 370340, Event 11095192, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.512 CET
+
+Begin processing the 54th record. Run 370340, Event 10608160, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.515 CET
+
+Begin processing the 55th record. Run 370340, Event 10369224, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.529 CET
+
+Begin processing the 56th record. Run 370340, Event 10642840, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.533 CET
+
+Begin processing the 57th record. Run 370340, Event 11169950, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.535 CET
+
+Begin processing the 58th record. Run 370340, Event 11407096, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.537 CET
+
+Begin processing the 59th record. Run 370340, Event 10701203, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.550 CET
+
+Begin processing the 60th record. Run 370340, Event 11478219, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.552 CET
+
+Begin processing the 61st record. Run 370340, Event 10991225, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.555 CET
+
+Begin processing the 62nd record. Run 370340, Event 10533392, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.557 CET
+
+Begin processing the 63rd record. Run 370340, Event 11231977, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.568 CET
+
+Begin processing the 64th record. Run 370340, Event 10673832, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.571 CET
+
+Begin processing the 65th record. Run 370340, Event 10710328, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.573 CET
+
+Begin processing the 66th record. Run 370340, Event 10803326, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.575 CET
+
+Begin processing the 67th record. Run 370340, Event 10905480, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.578 CET
+
+Begin processing the 68th record. Run 370340, Event 10799704, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.591 CET
+
+Begin processing the 69th record. Run 370340, Event 11449045, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.594 CET
+
+Begin processing the 70th record. Run 370340, Event 10892721, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.596 CET
+
+Begin processing the 71st record. Run 370340, Event 10715778, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.598 CET
+
+Begin processing the 72nd record. Run 370340, Event 10757744, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.610 CET
+
+Begin processing the 73rd record. Run 370340, Event 11390653, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.613 CET
+
+Begin processing the 74th record. Run 370340, Event 11064161, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.616 CET
+
+Begin processing the 75th record. Run 370340, Event 10392952, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.619 CET
+
+Begin processing the 76th record. Run 370340, Event 11075104, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.632 CET
+
+Begin processing the 77th record. Run 370340, Event 10794222, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.635 CET
+
+Begin processing the 78th record. Run 370340, Event 11117059, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.637 CET
+
+Begin processing the 79th record. Run 370340, Event 11155364, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.639 CET
+
+Begin processing the 80th record. Run 370340, Event 11337776, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.650 CET
+
+Begin processing the 81st record. Run 370340, Event 10819769, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.652 CET
+
+Begin processing the 82nd record. Run 370340, Event 11078776, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.655 CET
+
+Begin processing the 83rd record. Run 370340, Event 11210080, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.657 CET
+
+Begin processing the 84th record. Run 370340, Event 10518272, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.668 CET
+
+Begin processing the 85th record. Run 370340, Event 10677488, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.672 CET
+
+Begin processing the 86th record. Run 370340, Event 10888560, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.675 CET
+
+Begin processing the 87th record. Run 370340, Event 11337765, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.677 CET
+
+Begin processing the 88th record. Run 370340, Event 10919546, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.688 CET
+
+Begin processing the 89th record. Run 370340, Event 11255176, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.690 CET
+
+Begin processing the 90th record. Run 370340, Event 11267960, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.692 CET
+
+Begin processing the 91st record. Run 370340, Event 11012592, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.694 CET
+
+Begin processing the 92nd record. Run 370340, Event 10596720, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.705 CET
+
+Begin processing the 93rd record. Run 370340, Event 10563880, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.707 CET
+
+Begin processing the 94th record. Run 370340, Event 11322664, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.712 CET
+
+Begin processing the 95th record. Run 370340, Event 10565704, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.716 CET
+
+Begin processing the 96th record. Run 370340, Event 10532872, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.719 CET
+
+Begin processing the 97th record. Run 370340, Event 10381488, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.732 CET
+
+Begin processing the 98th record. Run 370340, Event 10532880, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.734 CET
+
+Begin processing the 99th record. Run 370340, Event 11078264, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.737 CET
+
+Begin processing the 100th record. Run 370340, Event 11038110, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.741 CET
+
+Begin processing the 101st record. Run 370340, Event 10722584, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.753 CET
+
+Begin processing the 102nd record. Run 370340, Event 10970649, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.756 CET
+
+Begin processing the 103rd record. Run 370340, Event 10985216, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.761 CET
+
+Begin processing the 104th record. Run 370340, Event 10414320, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.764 CET
+
+Begin processing the 105th record. Run 370340, Event 11443064, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.776 CET
+
+Begin processing the 106th record. Run 370340, Event 10439864, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.779 CET
+
+Begin processing the 107th record. Run 370340, Event 11109264, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.782 CET
+
+Begin processing the 108th record. Run 370340, Event 10500055, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.784 CET
+
+Begin processing the 109th record. Run 370340, Event 10846592, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.794 CET
+
+Begin processing the 110th record. Run 370340, Event 11432096, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.797 CET
+
+Begin processing the 111th record. Run 370340, Event 11236931, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.800 CET
+
+Begin processing the 112th record. Run 370340, Event 10357776, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.806 CET
+
+Begin processing the 113th record. Run 370340, Event 10852078, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.817 CET
+
+Begin processing the 114th record. Run 370340, Event 10397896, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.820 CET
+
+Begin processing the 115th record. Run 370340, Event 10937792, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.823 CET
+
+Begin processing the 116th record. Run 370340, Event 11153024, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.825 CET
+
+Begin processing the 117th record. Run 370340, Event 11235104, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.827 CET
+
+Begin processing the 118th record. Run 370340, Event 10625896, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.839 CET
+
+Begin processing the 119th record. Run 370340, Event 11450336, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.842 CET
+
+Begin processing the 120th record. Run 370340, Event 11295320, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.844 CET
+
+Begin processing the 121st record. Run 370340, Event 10852088, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.850 CET
+
+Begin processing the 122nd record. Run 370340, Event 10943279, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.861 CET
+
+Begin processing the 123rd record. Run 370340, Event 10492736, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.864 CET
+
+Begin processing the 124th record. Run 370340, Event 10791896, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.866 CET
+
+Begin processing the 125th record. Run 370340, Event 10414288, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.870 CET
+
+Begin processing the 126th record. Run 370340, Event 11007072, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.882 CET
+
+Begin processing the 127th record. Run 370340, Event 10830200, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.885 CET
+
+Begin processing the 128th record. Run 370340, Event 10636808, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.888 CET
+
+Begin processing the 129th record. Run 370340, Event 10560208, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.894 CET
+
+Begin processing the 130th record. Run 370340, Event 11054530, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.897 CET
+
+Begin processing the 131st record. Run 370340, Event 10667824, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.910 CET
+
+Begin processing the 132nd record. Run 370340, Event 10782730, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.913 CET
+
+Begin processing the 133rd record. Run 370340, Event 10892155, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.917 CET
+
+Begin processing the 134th record. Run 370340, Event 10366864, LumiSection 25 on stream 0 at 20-Jan-2025 21:35:23.920 CET
