@@ -94,7 +94,7 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; Minv; #events",10000, 2., 20.);
+  histo =new TH1D("histo","test; Minv; #events",10000, 2., 100.);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
