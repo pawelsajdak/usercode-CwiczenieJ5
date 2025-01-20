@@ -94,7 +94,7 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; Minv; #events",1000, 3., 8.);
+  histo =new TH1D("histo","test; Minv; #events",10000, 2., 20.);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -131,9 +131,9 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
       if(fabs(lMuonsVector.M()-jpsiMass)>0.03) continue;
       for (std::vector<pat::PackedCandidate>::const_iterator ic1 = candidates.begin(); ic1 < candidates.end(); ic1++) 
       {
-        if( abs(ic1->pdgId()) != 211 || !ic1->hasTrackDetails() || ic1->pt() < 2. || ic1->charge()<1 ) continue;
-        ROOT::Math::PxPyPzEVector lCandVector = ic1->p4();
-        ROOT::Math::PxPyPzEVector lFullVector = lMuonsVector+lorentzVector(lCandVector, kaonMass);
+        if(abs(ic1->pdgId()) != 211 || !ic1->hasTrackDetails() || ic1->pt() < 2. || ic1->charge()==0) continue;
+        math::XYZVector candMom = ic1->momentum();
+        ROOT::Math::PxPyPzEVector lFullVector = lMuonsVector+lorentzVector(candMom, kaonMass);
         histo->Fill(lFullVector.M());
       }  
     }
