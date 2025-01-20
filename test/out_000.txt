@@ -1,0 +1,17 @@
+files2: ['file:/scratch_cmsse/konec/data/2023D_ParkingDoubleMuonLowMass/000a11f5-055a-4402-b35b-a1e28cabaed7.root']
+%MSG-i AlpakaService:  (NoModuleName) 20-Jan-2025 21:34:55 CET pre-events
+AlpakaServiceSerialSync succesfully initialised.
+Found 1 device:
+  - AMD Opteron(tm) Processor 6320
+%MSG
+20-Jan-2025 21:35:14 CET  Initiating request to open file file:/scratch_cmsse/konec/data/2023D_ParkingDoubleMuonLowMass/000a11f5-055a-4402-b35b-a1e28cabaed7.root
+20-Jan-2025 21:35:19 CET  Successfully opened file file:/scratch_cmsse/konec/data/2023D_ParkingDoubleMuonLowMass/000a11f5-055a-4402-b35b-a1e28cabaed7.root
+ CTORXX
+HERE Analysis::beginJob()
+%MSG-s NewIOV:  PostStreamBeginRun 20-Jan-2025 21:35:21 CET PostStreamBeginRun
+Fetched new IOV for 'SiPixelQuality_v07_offline' request interval [ 1591113584476168 , 1591165124083713 ] new range [ 1591113584476168 , 1591165124083712 ] #entries 13
+%MSG
+%MSG-s NewIOV:  PostStreamBeginRun 20-Jan-2025 21:35:21 CET PostStreamBeginRun
+Fetched new IOV for 'BeamSpotObjects_Run3_LumiBased_v2' request interval [ 1591113584476168 , 1591165124083713 ] new range [ 1591113584476168 , 1591165124083712 ] #entries 6
+%MSG
+Begin processing the 1st record. Run 370460, Event 124508037, LumiSection 79 on stream 0 at 20-Jan-2025 21:35:21.701 CET

@@ -36,7 +36,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
 
 process.analiza= cms.EDAnalyzer("Analysis",
   muonSrc = cms.InputTag("slimmedMuons"),
-  outHist = cms.string('histos_'+jobId+'.root')
+  outHist = cms.string('histoB_'+jobId+'.root')
 )
 
 process.MyPath = cms.Path(process.analiza)

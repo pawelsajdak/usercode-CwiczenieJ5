@@ -1,0 +1,10 @@
+files2: ['file:/scratch_cmsse/konec/data/2023D_ParkingDoubleMuonLowMass/0419eec5-0ae4-4732-8f06-6d72dd25a149.root']
+%MSG-i AlpakaService:  (NoModuleName) 20-Jan-2025 21:34:58 CET pre-events
+AlpakaServiceSerialSync succesfully initialised.
+Found 1 device:
+  - AMD Opteron(tm) Processor 6320
+%MSG
+20-Jan-2025 21:35:14 CET  Initiating request to open file file:/scratch_cmsse/konec/data/2023D_ParkingDoubleMuonLowMass/0419eec5-0ae4-4732-8f06-6d72dd25a149.root
+20-Jan-2025 21:35:19 CET  Successfully opened file file:/scratch_cmsse/konec/data/2023D_ParkingDoubleMuonLowMass/0419eec5-0ae4-4732-8f06-6d72dd25a149.root
+ CTORXX
+HERE Analysis::beginJob()

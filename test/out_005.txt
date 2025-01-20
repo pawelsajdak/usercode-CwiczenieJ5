@@ -1,0 +1,6 @@
+files2: ['file:/scratch_cmsse/konec/data/2023D_ParkingDoubleMuonLowMass/0950eb05-8701-4fc8-8027-cdb91b547fb3.root']
+%MSG-i AlpakaService:  (NoModuleName) 20-Jan-2025 21:35:18 CET pre-events
+AlpakaServiceSerialSync succesfully initialised.
+Found 1 device:
+  - AMD Opteron(tm) Processor 6320
+%MSG
