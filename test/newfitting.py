@@ -2,15 +2,15 @@
 import ROOT as r
 import sys
 
-peakname = "Jpsi"
-xmin = 2.5
-xmax = 3.4
-par0 = 10.e5
-axmin = 0.
-axmax = 12.
+peakname = "psi(4415)"
+xmin = 4.1
+xmax = 4.9
+par0 = 10.e3
+#axmin = 3.5
+#axmax = 6.
 
 ##########################################
-histfilename = "fullhistogram.root"
+histfilename = "Bspectrum.root"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get("histo")
 histo.SetDirectory(0)
@@ -18,21 +18,23 @@ histfile.Close()
 
 expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2)) + [3]+x*[4]+x*x*[5]"
 fitFunc = r.TF1("fitFunc",expression,xmin,xmax)
-fitFunc.SetParameters(par0,(xmin+xmax)/2,0.1,1.,1.,1.)
-fitFunc.FixParameter(5,0.)
+fitFunc.SetParameters(par0,(xmin+xmax)/2,0.05,50.e3,1.,1.)
+
 results = histo.Fit(fitFunc,"ERS")
-'''
-with open('results2.txt') as of:
+
+with open('Bresults.txt','a') as of:
     print(peakname,"\t",fitFunc.GetParameter(1),"\n", results, file=of)
-'''
+
 canvas = r.TCanvas("canvas")
 canvas.cd()
-canvas.SetLogy(True)
+#canvas.SetLogy(True)
 
-histo.SetAxisRange(axmin, axmax)
+#histo.SetAxisRange(axmin, axmax)
+histo.SetAxisRange(3.5, 6., "X")
+histo.SetAxisRange(38.e3, 52.e3, "Y")
 histo.SetTitle(peakname+"\t {:.3f}".format(fitFunc.GetParameter(1))+"; Minv; #events")
 histo.SetStats(0)
 histo.Draw("h")
 
-canvas.Print("fi_"+peakname+".pdf")
+canvas.Print("fit2_"+peakname+".pdf")
 input('press enter to exit')
