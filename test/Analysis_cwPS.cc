@@ -26,6 +26,7 @@
 #include "TH2D.h"
 #include "TFile.h"
 #include "TMath.h"
+#include "TNtupleD.h"
 #include <Math/Vector4D.h>
 
 #include <sstream>
@@ -70,10 +71,10 @@ private:
   edm::ParameterSet theConfig;
   bool debug;
   unsigned int theEventCount;
-  TH1D *histo;
-
+  //TH1D *histo;
+  TNtupleD *mytuple;
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
-  edm::EDGetTokenT< vector<pat::PackedCandidate> > theCandidateToken;
+
 };
 
 
@@ -82,7 +83,6 @@ Analysis::Analysis(const edm::ParameterSet& conf)
 {
   cout <<" CTORXX" << endl;
   theMuonToken = consumes< vector<pat::Muon> >( theConfig.getParameter<edm::InputTag>("muonSrc"));
-  theCandidateToken     = consumes< vector<pat::PackedCandidate> > (edm::InputTag("packedPFCandidates"));
   if(theConfig.exists("debug")) debug = theConfig.getParameter<bool>("debug"); 
 }
 
@@ -94,58 +94,49 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; Minv; #events",10000, 2., 100.);
+  //histo =new TH1D("histo","test; Minv; #events",100000, 0., 100.);
+  mytuple = new TNtupleD("mytuple","Ntuple","Event:Px1:Py1:Pz1:Px2:Py2:Pz2");
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
 void Analysis::endJob()
 {
   //make a new Root file
-  TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
+  TFile myRootFile( theConfig.getParameter<std::string>("outTuple").c_str(), "RECREATE");
   //write histogram data
-  histo->Write();
+  //histo->Write();
+  mytuple->Write();
   myRootFile.Close();
-  delete histo;
+  //delete histo;
+  delete mytuple;
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
-void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
+void Analysis::analyze(
+    const edm::Event& ev, const edm::EventSetup& es)
 {
   if (debug) std::cout << " -------------------------------- HERE Cwiczenie::analyze "<< std::endl;
   const vector<pat::Muon> & muons = ev.get(theMuonToken);
-  const vector<pat::PackedCandidate> & candidates = ev.get(theCandidateToken);
+//  const vector<pat::PackedCandidate> & candidates = ev.get(theCandidateToken);
 
   if (debug) std::cout <<" number of      muons: " << muons.size() <<std::endl;
  
+
   //std::vector< std::pair<reco::TransientTrack, reco::TransientTrack> > jpsis;
-  for (std::vector<pat::Muon>::const_iterator im1 = muons.begin(); im1 < muons.end(); im1++)
-  {
+  for (std::vector<pat::Muon>::const_iterator im1 = muons.begin(); im1 < muons.end(); im1++) {
     const pat::Muon & muon = *im1;
-    if(muon.pt()<3) continue;
-    for (std::vector<pat::Muon>::const_iterator im2 = im1+1; im2 < muons.end(); im2++)
-    {
+    for (std::vector<pat::Muon>::const_iterator im2 = im1+1; im2 < muons.end(); im2++) {
       const pat::Muon & muon2 = *im2;
-      if(muon2.pt()<3 || muon.charge()*muon2.charge()!=-1) continue;
-      ROOT::Math::PxPyPzEVector lMuonsVector = muon.p4()+muon2.p4();
-      //Minv of two muons close to the J/psi peak
-      if(fabs(lMuonsVector.M()-jpsiMass)>0.03) continue;
-      for (std::vector<pat::PackedCandidate>::const_iterator ic1 = candidates.begin(); ic1 < candidates.end(); ic1++) 
-      {
-        if(abs(ic1->pdgId()) != 211 || !ic1->hasTrackDetails() || ic1->pt() < 2. || ic1->charge()==0) continue;
-        math::XYZVector candMom = ic1->momentum();
-        ROOT::Math::PxPyPzEVector lFullVector = lMuonsVector+lorentzVector(candMom, kaonMass);
-        histo->Fill(lFullVector.M());
-      }  
+      if(muon.charge()*muon2.charge()==-1){
+        mytuple->Fill((double)theEventCount,muon.px(),muon.py(),muon.pz(),muon2.px(),muon2.py(),muon2.pz());
+      }
     }
   } 
-    
-   
   
-  cout << "\n";
+  std::cout << "\n";
 
 
-  if (debug) cout <<"*** Analyze event: " << ev.id()<<" analysed event count:"<<++theEventCount << endl;
+  if (debug) std::cout <<"*** Analyze event: " << ev.id()<<" analysed event count:"<<theEventCount++ << endl;
 }
 
 DEFINE_FWK_MODULE(Analysis);
-

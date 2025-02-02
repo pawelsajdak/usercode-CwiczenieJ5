@@ -24,8 +24,8 @@ for f in lsOutput.split():
 
 #print (files)
 print (len(files))
- 
-'''
+''' 
+
 # input files (up to 255 files accepted)
 process.source = cms.Source('PoolSource',
   fileNames = cms.untracked.vstring(
@@ -49,7 +49,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
 
 process.analiza= cms.EDAnalyzer("Analysis",
   muonSrc = cms.InputTag("slimmedMuons"),
-  outHist = cms.string("Btest.root"),
+  outTuple = cms.string("Tuple.root"),
   debug = cms.bool(True)
 )
 
