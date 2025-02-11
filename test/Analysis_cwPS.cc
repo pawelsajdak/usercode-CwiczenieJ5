@@ -105,10 +105,13 @@ void Analysis::endJob()
   TFile myRootFile( theConfig.getParameter<std::string>("outTuple").c_str(), "RECREATE");
   //write histogram data
   //histo->Write();
-  mytuple->Write();
+  auto newTuple = mytuple->CloneTree();
+  newTuple->Write();
+  newTuple->Print();
   myRootFile.Close();
   //delete histo;
   delete mytuple;
+  //delete newTuple;
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
