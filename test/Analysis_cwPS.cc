@@ -70,10 +70,11 @@ private:
   edm::ParameterSet theConfig;
   bool debug;
   unsigned int theEventCount;
-  TH1D *histo;
+  TH1D *histoK, *histoPi, *histoPr;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT< vector<pat::PackedCandidate> > theCandidateToken;
+  edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> theTrackBuilderToken;
 };
 
 
@@ -83,6 +84,7 @@ Analysis::Analysis(const edm::ParameterSet& conf)
   cout <<" CTORXX" << endl;
   theMuonToken = consumes< vector<pat::Muon> >( theConfig.getParameter<edm::InputTag>("muonSrc"));
   theCandidateToken     = consumes< vector<pat::PackedCandidate> > (edm::InputTag("packedPFCandidates"));
+  theTrackBuilderToken = esConsumes(edm::ESInputTag("", "TransientTrackBuilder"));
   if(theConfig.exists("debug")) debug = theConfig.getParameter<bool>("debug"); 
 }
 
@@ -94,7 +96,9 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histo =new TH1D("histo","test; Minv; #events",10000, 2., 100.);
+  histoK =new TH1D("histoK","kaon; Minv; #events",10000, 2., 100.);
+  histoPi =new TH1D("histoPi","pion; Minv; #events",10000, 2., 100.);
+  histoPr =new TH1D("histoPr","proton; Minv; #events",10000, 2., 100.);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -103,17 +107,26 @@ void Analysis::endJob()
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
   //write histogram data
-  histo->Write();
+  histoK->Write();
+  cout << "Wrote histoK \n";
+  histoPi->Write();
+  cout << "Wrote histoPi \n";
+  histoPr->Write();
+  cout << "Wrote histoPr \n";
   myRootFile.Close();
-  delete histo;
+  delete histoK;
+  delete histoPi;
+  delete histoPr;
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////
 void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
 {
   if (debug) std::cout << " -------------------------------- HERE Cwiczenie::analyze "<< std::endl;
   const vector<pat::Muon> & muons = ev.get(theMuonToken);
   const vector<pat::PackedCandidate> & candidates = ev.get(theCandidateToken);
+  const auto & trackBuilder = es.getData(theTrackBuilderToken);
 
   if (debug) std::cout <<" number of      muons: " << muons.size() <<std::endl;
  
@@ -121,20 +134,59 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
   for (std::vector<pat::Muon>::const_iterator im1 = muons.begin(); im1 < muons.end(); im1++)
   {
     const pat::Muon & muon = *im1;
+    if(!im1->isGlobalMuon() || !im1->isTrackerMuon()) continue;
     if(muon.pt()<3) continue;
+    reco::TrackRef mu1Ref = im1->track();
+    if (!mu1Ref)continue;
+
     for (std::vector<pat::Muon>::const_iterator im2 = im1+1; im2 < muons.end(); im2++)
     {
+      if(!im2->isGlobalMuon() || !im2->isTrackerMuon()) continue;
       const pat::Muon & muon2 = *im2;
       if(muon2.pt()<3 || muon.charge()*muon2.charge()!=-1) continue;
+      reco::TrackRef mu2Ref = im2->track();
+      if (!mu2Ref)continue;
+      if(fabs(muon.vz()-muon2.vz())>0.3) continue;
+
       ROOT::Math::PxPyPzEVector lMuonsVector = muon.p4()+muon2.p4();
       //Minv of two muons close to the J/psi peak
-      if(fabs(lMuonsVector.M()-jpsiMass)>0.03) continue;
+      if(fabs(lMuonsVector.M()-jpsiMass)>0.1) continue;
+
+      // Could the two muons have a common vertex - vjp?
+      std::vector<reco::TransientTrack> trackTTs;
+      trackTTs.push_back(trackBuilder.build(mu1Ref));
+      trackTTs.push_back(trackBuilder.build(mu2Ref));
+      KalmanVertexFitter kvf(true);
+      reco::Vertex vjp(TransientVertex(kvf.vertex(trackTTs)));
+      double prob = TMath::Prob(vjp.chi2(),vjp.ndof());
+      if (prob<0.1) continue;
+
+
+
       for (std::vector<pat::PackedCandidate>::const_iterator ic1 = candidates.begin(); ic1 < candidates.end(); ic1++) 
       {
         if(abs(ic1->pdgId()) != 211 || !ic1->hasTrackDetails() || ic1->pt() < 2. || ic1->charge()==0) continue;
+        
+        // Could J/psi and the candidate (kaon,pion,proton) come from a common vertex - vBX?
+        const reco::Track & trk1 = ic1->pseudoTrack();
+        if (fabs(vjp.position().z()- trk1.vz())>0.3)continue;
+        trackTTs.push_back(trackBuilder.build(trk1));
+        reco::Vertex vBX(TransientVertex(kvf.vertex(trackTTs)));
+        double probvBX = TMath::Prob(vBX.chi2(),vBX.ndof());  
+        if (probvBX<0.15) continue;
+        
+        // Kaon
         math::XYZVector candMom = ic1->momentum();
-        ROOT::Math::PxPyPzEVector lFullVector = lMuonsVector+lorentzVector(candMom, kaonMass);
-        histo->Fill(lFullVector.M());
+        ROOT::Math::PxPyPzEVector lFullVectorK = lMuonsVector+lorentzVector(candMom, kaonMass);
+        histoK->Fill(lFullVectorK.M());
+
+        // Pion
+        ROOT::Math::PxPyPzEVector lFullVectorPi = lMuonsVector+lorentzVector(candMom, pionMass);
+        histoPi->Fill(lFullVectorPi.M());
+
+        // Proton
+        ROOT::Math::PxPyPzEVector lFullVectorPr = lMuonsVector+lorentzVector(candMom, protonMass);
+        histoPr->Fill(lFullVectorPr.M());
       }  
     }
   } 
