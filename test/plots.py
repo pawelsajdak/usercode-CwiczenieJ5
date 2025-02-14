@@ -6,15 +6,17 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "a.root"
+fileName = "KPPtest.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
-f = TFile(fileName);
-f.ls();
+f = TFile(fileName)
+f.ls()
 
 c1 = TCanvas('cHisto','cHisto',600,600)
-histo = gROOT.FindObject('histo')
+c1.SetLogy(1)
+histo = gROOT.FindObject('histoK')
+histo.SetAxisRange(3.,7.)
 histo.Draw()
-c1.Print("Bfull.pdf")
+c1.Print("histoK.pdf")
 input('press enter to exit')

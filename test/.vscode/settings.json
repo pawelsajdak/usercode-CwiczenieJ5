@@ -4,6 +4,13 @@
         "macro_fit.C": "cpp",
         "fitting.C": "cpp",
         "dfsfs.C": "cpp",
-        "newfit.C": "cpp"
+        "newfit.C": "cpp",
+        "array": "cpp",
+        "*.tcc": "cpp",
+        "memory": "cpp",
+        "istream": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp"
     }
 }
