@@ -6,7 +6,7 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "KPPtest.root"
+fileName = "sVrt.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
@@ -16,7 +16,7 @@ f.ls()
 c1 = TCanvas('cHisto','cHisto',600,600)
 c1.SetLogy(1)
 histo = gROOT.FindObject('histoPr')
-histo.SetAxisRange(3.,7.)
+histo.SetAxisRange(3.,10.)
 histo.Draw()
 c1.Print("histoPr.pdf")
 input('press enter to exit')
