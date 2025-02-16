@@ -6,7 +6,7 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "sVrt.root"
+fileName = "esum.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
@@ -15,9 +15,10 @@ f.ls()
 
 c1 = TCanvas('cHisto','cHisto',600,600)
 c1.SetLogy(1)
-histo = gROOT.FindObject('histoPi')
-histo.SetAxisRange(3.,10.)
-histo.SetAxisRange(2.e3,8.e3,"Y")
+histo = gROOT.FindObject('hTest2')
+histo.SetTitle("J/psi scaled + pion")
+#histo.SetAxisRange(3.,10.)
+#histo.SetAxisRange(2.e3,8.e3,"Y")
 histo.Draw()
-c1.Print("histoPi.pdf")
+c1.Print("hTest2.pdf")
 input('press enter to exit')
