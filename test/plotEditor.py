@@ -4,7 +4,7 @@ import sys
 
 histfilename = "myVrtKPP.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("histoK")
+histo = histfile.Get("histoPi")
 histo.SetDirectory(0)
 histfile.Close()
 
@@ -19,7 +19,7 @@ canvas.SetLeftMargin(0.12)
 
 histo.SetAxisRange(3.5,6., "X")
 histo.SetAxisRange(1900, 8.e3, "Y")
-histo.SetTitle("J/#psi + K^{+-}; #it{M_{inv}} (GeV); # Events")
+histo.SetTitle("J/#psi + #pi^{+-}; #it{M_{inv}} (GeV); # Events")
 histo.SetStats(0)
 
 r.gStyle.SetTitleFontSize(0.06)
@@ -34,10 +34,10 @@ histo.SetFillColor(19)
 histo.Draw("h")
 
 
-funcfilename = "Kfunctions.root"
+funcfilename = "Pifunctions.root"
 funcfile = r.TFile.Open(funcfilename)
-Bfunc = r.gROOT.FindObject("fitFunc")
-Xfunc = r.gROOT.FindObject("XK")
+Bfunc = r.gROOT.FindObject("Bfunc")
+Xfunc = r.gROOT.FindObject("Xfunc")
 
 canvas.cd()
 Bfunc.SetLineColor(3)
@@ -49,12 +49,12 @@ Xfunc.Draw("same")
 l = r.TLatex()
 l.SetTextFont(42)
 l.SetTextSize(0.06)
-l.DrawLatex(4.42,6200., "X_{K}^{+-}")
-l.DrawLatex(5.25,3100.,"B^{+-}")
+l.DrawLatex(4.3,6250., "X_{#pi}^{+-}")
+l.DrawLatex(5.15,3000.,"B^{+-}")
 l.SetTextSize(0.035)
 l.DrawLatex(5.3,7400.,"#splitline{|M_{#mu#mu} - m_{J/#psi}| < 0.1 GeV}{6.5 #times 10^{6} entries}")
 
 
 
-canvas.Print("KN.pdf")
+canvas.Print("PiN.pdf")
 input('press enter to exit')

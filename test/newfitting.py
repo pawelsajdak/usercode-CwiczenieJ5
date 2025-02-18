@@ -2,8 +2,8 @@
 import ROOT as r
 import sys
 
-peakname = "XK"
-xmin = 4.2
+peakname = "XPi"
+xmin = 4.0
 xmax = 4.8
 par0 = 3000.
 #axmin = 3.5
@@ -12,7 +12,7 @@ par0 = 3000.
 ##########################################
 histfilename = "myVrtKPP.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("histoK")
+histo = histfile.Get("histoPi")
 histo.SetDirectory(0)
 histfile.Close()
 
@@ -21,11 +21,11 @@ fitFunc = r.TF1("fitFunc",expression,xmin,xmax)
 fitFunc.SetParameters(par0,(xmin+xmax)/2,0.05,3.e3,1.,1.)
 
 results = histo.Fit(fitFunc,"ERS")
-funcFile = r.TFile.Open("Kfunctions.root","UPDATE")
-fitFunc.Write("XK")
+funcFile = r.TFile.Open("Pifunctions.root","UPDATE")
+fitFunc.Write("Xfunc")
 #funcFile.Close()
 
-with open('Kresults.txt','a') as of:
+with open('Piresults.txt','a') as of:
     print(peakname,"\t",fitFunc.GetParameter(1),"\n", results, file=of)
 
 canvas = r.TCanvas("canvas")
@@ -34,11 +34,11 @@ canvas.cd()
 
 #histo.SetAxisRange(axmin, axmax)
 histo.SetAxisRange(3.5, 6., "X")
-histo.SetAxisRange(2.e3, 8.e3, "Y")
+histo.SetAxisRange(2.e3, 7.e3, "Y")
 histo.SetTitle(peakname+"\t {:.3f}".format(fitFunc.GetParameter(1))+"; Minv; #events")
 histo.SetStats(0)
 histo.Draw("h")
 
 
-canvas.Print("KN_"+peakname+".pdf")
+canvas.Print("PiN_"+peakname+".pdf")
 input('press enter to exit')
