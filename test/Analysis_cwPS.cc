@@ -187,6 +187,8 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         // Proton
         ROOT::Math::PxPyPzEVector lFullVectorPr = lMuonsVector+lorentzVector(candMom, protonMass);
         histoPr->Fill(lFullVectorPr.M());
+
+        trackTTs.pop_back();
       }  
     }
   } 
