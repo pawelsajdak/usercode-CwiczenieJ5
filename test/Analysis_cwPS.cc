@@ -170,9 +170,13 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         // Could J/psi and the candidate (kaon,pion,proton) come from a common vertex - vBX?
         const reco::Track & trk1 = ic1->pseudoTrack();
         if (fabs(vjp.position().z()- trk1.vz())>0.3)continue;
+        /////
+        //cout<< "before adding the candidate "<<trackTTs.size()<<endl;
         trackTTs.push_back(trackBuilder.build(trk1));
+        //cout<< "after adding the candidate "<<trackTTs.size()<<endl;
         reco::Vertex vBX(TransientVertex(kvf.vertex(trackTTs)));
-        double probvBX = TMath::Prob(vBX.chi2(),vBX.ndof());  
+        double probvBX = TMath::Prob(vBX.chi2(),vBX.ndof());
+        trackTTs.pop_back();  
         if (probvBX<0.15) continue;
         
         // Kaon
@@ -188,7 +192,6 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         ROOT::Math::PxPyPzEVector lFullVectorPr = lMuonsVector+lorentzVector(candMom, protonMass);
         histoPr->Fill(lFullVectorPr.M());
 
-        trackTTs.pop_back();
       }  
     }
   } 
