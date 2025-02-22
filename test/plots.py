@@ -6,7 +6,7 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "esum.root"
+fileName = "fullHistoJxCorrected.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
@@ -14,11 +14,11 @@ f = TFile(fileName)
 f.ls()
 
 c1 = TCanvas('cHisto','cHisto',600,600)
-c1.SetLogy(1)
-histo = gROOT.FindObject('hTest2')
-histo.SetTitle("J/psi scaled + pion")
+#c1.SetLogy(1)
+histo = gROOT.FindObject('histoK')
+histo.SetTitle("kaon")
 #histo.SetAxisRange(3.,10.)
 #histo.SetAxisRange(2.e3,8.e3,"Y")
 histo.Draw()
-c1.Print("hTest2.pdf")
+c1.Print("oldJxCorrNK.pdf")
 input('press enter to exit')
