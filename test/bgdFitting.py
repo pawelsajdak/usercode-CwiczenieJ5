@@ -1,28 +1,30 @@
 #!/cvmfs/cms.cern.ch/el9_amd64_gcc12/cms/cmssw/CMSSW_14_0_2/external/el9_amd64_gcc12/bin/python3
+#from typing import Any
 import ROOT as r
 import sys
+import numpy as np
 
-peakname = "Xk"
-xmin = 4.0
-xmax = 5.0
-par0 = 600.
-#axmin = 3.5
-#axmax = 6.
-
+class Background:
+    def __call__(self, arr,par):
+        if (fitRange.IsInside(arr[0])):
+            return par[0]*np.exp((-(arr[0]-par[1])**2)/(2*par[2]**2))+par[3]
+        else:
+            r.TF1.RejectPoint()
+            return 0.0
 ##########################################
 histfilename = "JxCorrN.root"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get("histoK")
 histo.SetDirectory(0)
 histfile.Close()
-'''
-expression = "[0]+x*[1]+x*x*[2]"
-fitFunc = r.TF1("fitFunc",expression,xmin,xmax)
-'''
-expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2)) + [3]+x*[4]+x*x*[5]"
-fitFunc = r.TF1("fitFunc",expression,xmin,xmax)
-fitFunc.SetParameters(par0,(xmin+xmax)/2,0.1,50.e3,-1.,-1.)
 
+fitRange = r.Fit.DataRange()
+fitRange.AddRange(3.8,4.2)
+fitRange.AddRange(4.65,5.0)
+fitRange.AddRange(5.5,5.9)
+b = Background()
+fitFunc = r.TF1("fitFunc",b,3.8,5.9,4)
+fitFunc.SetParameters(2000.,0.0,4.,350.)
 
 results = histo.Fit(fitFunc,"ERS")
 funcFile = r.TFile.Open("NKfuncs.root","RECREATE")
@@ -30,7 +32,7 @@ fitFunc.Write("Xfunc")
 #funcFile.Close()
 
 with open('NKresults.txt','a') as of:
-    print(peakname,"\t",fitFunc.GetParameter(1),"\n", results, file=of)
+    print(fitFunc.GetParameter(1),"\n", results, file=of)
 
 canvas = r.TCanvas("canvas")
 canvas.cd()
@@ -39,10 +41,10 @@ canvas.cd()
 #histo.SetAxisRange(axmin, axmax)
 #histo.SetAxisRange(3.5, 6., "X")
 #histo.SetAxisRange(2.e3, 7.e3, "Y")
-histo.SetTitle(peakname+"\t {:.3f}".format(fitFunc.GetParameter(1))+"; Minv; #events")
+#histo.SetTitle(peakname+"\t {:.3f}".format(fitFunc.GetParameter(1))+"; Minv; #events")
 histo.SetStats(0)
 histo.Draw("h")
 
 
-canvas.Print("NK_"+peakname+".pdf")
+canvas.Print("NK_background.pdf")
 input('press enter to exit')
