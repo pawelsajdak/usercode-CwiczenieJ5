@@ -2,10 +2,10 @@
 import ROOT as r
 import sys
 
-peakname = "Bpm"
-xmin = 4.9
-xmax = 5.6
-par0 = 200.
+peakname = "Xk"
+xmin = 4.0
+xmax = 5.0
+par0 = 600.
 #axmin = 3.5
 #axmax = 6.
 
@@ -16,7 +16,6 @@ histo = histfile.Get("histoK")
 histo.SetDirectory(0)
 histfile.Close()
 
-#Gaussian peak + Gaussian background + offset([6])
 expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2)) + [3]*exp((-(x-[4])**2)/(2*[5]**2))+[6]"
 fitFunc = r.TF1("fitFunc",expression,xmin,xmax)
 fitFunc.SetParameters(par0,(xmin+xmax)/2,0.1,1.,1.,1.,1.)
@@ -28,8 +27,8 @@ fitFunc.FixParameter(6,324.708)
 
 
 results = histo.Fit(fitFunc,"ERSL")
-funcFile = r.TFile.Open("NKfuncs.root","RECREATE")
-fitFunc.Write("Bfunc")
+funcFile = r.TFile.Open("NKfuncs.root","UPDATE")
+fitFunc.Write("Xfunc")
 #funcFile.Close()
 
 with open('NKresults.txt','a') as of:
