@@ -4,7 +4,7 @@ import sys
 
 histfilename = "JxCorrN.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("histoK")
+histo = histfile.Get("histoPi")
 histo.SetDirectory(0)
 histfile.Close()
 
@@ -20,7 +20,7 @@ canvas.SetRightMargin(0.08)
 
 #histo.SetAxisRange(3.5,6., "X")
 #histo.SetAxisRange(1900, 8.e3, "Y")
-histo.SetTitle("#it{J/#psi} + #it{K}^{#pm}; #it{M}_{inv} (GeV); # Events")
+histo.SetTitle("#it{J/#psi} + #it{#pi}^{#pm}; #it{M}_{inv} (GeV); # Events")
 histo.SetStats(0)
 
 r.gStyle.SetTitleFontSize(0.06)
@@ -36,7 +36,7 @@ histo.SetFillColor(19)
 histo.Draw("h")
 
 
-funcfilename = "NKfuncs.root"
+funcfilename = "NPifuncs.root"
 funcfile = r.TFile.Open(funcfilename)
 Bfunc = r.gROOT.FindObject("Bfunc")
 Xfunc = r.gROOT.FindObject("Xfunc")
@@ -49,7 +49,7 @@ Xfunc.Draw("same")
 
 '''
 # Background line
-bgdfilename = "NKbgd.root"
+bgdfilename = "NPibgd.root"
 bgdfile = r.TFile.Open(bgdfilename)
 bgd = r.gROOT.FindObject("bgd")
 bgdparams = bgd.GetParameters()
@@ -66,12 +66,12 @@ bgdDrawFunc.Draw("same")
 l = r.TLatex()
 l.SetTextFont(42)
 l.SetTextSize(0.06)
-l.DrawLatex(4.4,1200., "#it{X}_{#it{K}}^{#pm}")
-l.DrawLatex(5.25,670.,"#it{B}^{#pm}")
+l.DrawLatex(4.45,1100., "#it{X}_{#it{#pi}}^{#pm}")
+l.DrawLatex(5.15,550.,"#it{B}^{#pm}")
 l.SetTextSize(0.035)
-l.DrawLatex(5.36,1350.,"|#it{M_{#mu#mu} - m_{J/#psi}}| < 0.1 GeV")
+l.DrawLatex(5.36,1180.,"|#it{M_{#mu#mu} - m_{J/#psi}}| < 0.1 GeV")
 
 
 
-canvas.Print("NKwobgd.pdf")
+canvas.Print("NPiwobgd.pdf")
 input('press enter to exit')
