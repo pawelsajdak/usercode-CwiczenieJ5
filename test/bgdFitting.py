@@ -1,5 +1,4 @@
 #!/cvmfs/cms.cern.ch/el9_amd64_gcc12/cms/cmssw/CMSSW_14_0_2/external/el9_amd64_gcc12/bin/python3
-#from typing import Any
 import ROOT as r
 import sys
 import numpy as np
@@ -24,15 +23,16 @@ fitRange.AddRange(4.65,5.0)
 fitRange.AddRange(5.5,5.9)
 b = Background()
 fitFunc = r.TF1("fitFunc",b,3.8,5.9,4)
-fitFunc.SetParameters(2000.,0.0,4.,350.)
+fitFunc.SetParameters(1.e6,1.,1.,350.)
 
-results = histo.Fit(fitFunc,"ERS")
-funcFile = r.TFile.Open("NKfuncs.root","RECREATE")
-fitFunc.Write("Xfunc")
+#r.Math.MinimizerOptions.SetDefaultTolerance(1.e-6)
+results = histo.Fit(fitFunc,"ERSL")
+funcFile = r.TFile.Open("NKbgd.root","RECREATE")
+fitFunc.Write("bgd")
 #funcFile.Close()
 
-with open('NKresults.txt','a') as of:
-    print(fitFunc.GetParameter(1),"\n", results, file=of)
+with open('NKbgd.txt','a') as of:
+    print(results, file=of)
 
 canvas = r.TCanvas("canvas")
 canvas.cd()
