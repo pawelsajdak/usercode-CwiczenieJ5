@@ -2,36 +2,36 @@
 import ROOT as r
 import sys
 
-peakname = "Xk"
-xmin = 4.0
-xmax = 5.0
-par0 = 600.
+peakname = "Bpm"
+xmin = 4.9
+xmax = 5.5
+par0 = 100.
 #axmin = 3.5
 #axmax = 6.
 
 ##########################################
 histfilename = "JxCorrN.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("histoK")
+histo = histfile.Get("histoPi")
 histo.SetDirectory(0)
 histfile.Close()
 
 expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2)) + [3]*exp((-(x-[4])**2)/(2*[5]**2))+[6]"
 fitFunc = r.TF1("fitFunc",expression,xmin,xmax)
 fitFunc.SetParameters(par0,(xmin+xmax)/2,0.1,1.,1.,1.,1.)
-#Background parameters (from "NKbgd.txt")
-fitFunc.FixParameter(3,1116440.)
-fitFunc.FixParameter(4,-2.10743)
-fitFunc.FixParameter(5,1.57098)
-fitFunc.FixParameter(6,324.708)
+#Background parameters (from "NPibgd.txt")
+fitFunc.FixParameter(3,729052.)
+fitFunc.FixParameter(4,-2.79952)
+fitFunc.FixParameter(5,1.74473)
+fitFunc.FixParameter(6,314.618)
 
 
 results = histo.Fit(fitFunc,"ERSL")
-funcFile = r.TFile.Open("NKfuncs.root","UPDATE")
-fitFunc.Write("Xfunc")
+funcFile = r.TFile.Open("NPifuncs.root","UPDATE")
+fitFunc.Write("Bfunc")
 #funcFile.Close()
 
-with open('NKresults.txt','a') as of:
+with open('NPiresults.txt','a') as of:
     print(peakname,"\t",fitFunc.GetParameter(1),"\n", results, file=of)
 
 canvas = r.TCanvas("canvas")
@@ -46,5 +46,5 @@ histo.SetStats(0)
 histo.Draw("h")
 
 
-canvas.Print("NK_"+peakname+".pdf")
+canvas.Print("NPi_"+peakname+".pdf")
 input('press enter to exit')

@@ -13,25 +13,25 @@ class Background:
 ##########################################
 histfilename = "JxCorrN.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("histoK")
+histo = histfile.Get("histoPi")
 histo.SetDirectory(0)
 histfile.Close()
 
 fitRange = r.Fit.DataRange()
-fitRange.AddRange(3.8,4.2)
-fitRange.AddRange(4.65,5.0)
-fitRange.AddRange(5.5,5.9)
+fitRange.AddRange(3.8,4.1)
+fitRange.AddRange(4.6,4.8)
+fitRange.AddRange(5.4,5.8)
 b = Background()
-fitFunc = r.TF1("fitFunc",b,3.8,5.9,4)
+fitFunc = r.TF1("fitFunc",b,3.8,5.8,4)
 fitFunc.SetParameters(1.e6,1.,1.,350.)
 
 #r.Math.MinimizerOptions.SetDefaultTolerance(1.e-6)
 results = histo.Fit(fitFunc,"ERSL")
-funcFile = r.TFile.Open("NKbgd.root","RECREATE")
+funcFile = r.TFile.Open("NPibgd.root","RECREATE")
 fitFunc.Write("bgd")
 #funcFile.Close()
 
-with open('NKbgd.txt','a') as of:
+with open('NPibgd.txt','a') as of:
     print(results, file=of)
 
 canvas = r.TCanvas("canvas")
@@ -46,5 +46,5 @@ histo.SetStats(0)
 histo.Draw("h")
 
 
-canvas.Print("NK_background.pdf")
+canvas.Print("NPi_background.pdf")
 input('press enter to exit')
