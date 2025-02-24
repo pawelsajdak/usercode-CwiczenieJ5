@@ -13,13 +13,14 @@ canvas = r.TCanvas("canvas")
 canvas.cd()
 canvas.SetBottomMargin(0.12)
 canvas.SetLeftMargin(0.12)
+canvas.SetRightMargin(0.08)
 #canvas.SetTopMargin(0.2)
 #canvas.SetLogy(True)
 
 
 #histo.SetAxisRange(3.5,6., "X")
 #histo.SetAxisRange(1900, 8.e3, "Y")
-histo.SetTitle("J/#psi + K^{+-}; #it{M}_{inv} (GeV); # Events")
+histo.SetTitle("#it{J/#psi} + #it{K}^{#pm}; #it{M}_{inv} (GeV); # Events")
 histo.SetStats(0)
 
 r.gStyle.SetTitleFontSize(0.06)
@@ -31,6 +32,7 @@ histo.GetYaxis().SetTitleSize(0.05)
 histo.GetYaxis().SetTitleOffset(1.2)
 histo.GetXaxis().CenterTitle(True)
 histo.SetFillColor(19)
+#histo.SetLineColor(28)
 histo.Draw("h")
 
 
@@ -45,6 +47,7 @@ Bfunc.Draw("same")
 Xfunc.SetLineColor(2)
 Xfunc.Draw("same")
 
+'''
 # Background line
 bgdfilename = "NKbgd.root"
 bgdfile = r.TFile.Open(bgdfilename)
@@ -58,17 +61,17 @@ canvas.cd()
 bgdDrawFunc.SetLineColor(6)
 bgdDrawFunc.SetLineStyle(2)
 bgdDrawFunc.Draw("same")
-
 '''
+
 l = r.TLatex()
 l.SetTextFont(42)
 l.SetTextSize(0.06)
-l.DrawLatex(4.3,6250., "X_{#pi}^{+-}")
-l.DrawLatex(5.15,3000.,"B^{+-}")
+l.DrawLatex(4.4,1200., "#it{X}_{#it{K}}^{#pm}")
+l.DrawLatex(5.25,670.,"#it{B}^{#pm}")
 l.SetTextSize(0.035)
-l.DrawLatex(5.3,7400.,"#splitline{|M_{#mu#mu} - m_{J/#psi}| < 0.1 GeV}{6.5 #times 10^{6} entries}")
-'''
+l.DrawLatex(5.36,1350.,"|#it{M_{#mu#mu} - m_{J/#psi}}| < 0.1 GeV")
 
 
-canvas.Print("NKwbgd.pdf")
+
+canvas.Print("NKwobgd.pdf")
 input('press enter to exit')
