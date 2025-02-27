@@ -170,10 +170,13 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         // Could J/psi and the candidate (kaon,pion,proton) come from a common vertex - vBX?
         const reco::Track & trk1 = ic1->pseudoTrack();
         if (fabs(vjp.position().z()- trk1.vz())>0.3)continue;
-        /////
-        //cout<< "before adding the candidate "<<trackTTs.size()<<endl;
         trackTTs.push_back(trackBuilder.build(trk1));
-        //cout<< "after adding the candidate "<<trackTTs.size()<<endl;
+        
+        // Added check
+        if(deltaR(trk1,*mu1Ref)<0.1) continue;
+        if(deltaR(trk1,*mu2Ref)<0.1) continue;
+        
+
         reco::Vertex vBX(TransientVertex(kvf.vertex(trackTTs)));
         double probvBX = TMath::Prob(vBX.chi2(),vBX.ndof());
         trackTTs.pop_back();  

@@ -6,7 +6,7 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "fullHistoJxCorrected.root"
+fileName = "deltaRtestBig.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
@@ -20,5 +20,5 @@ histo.SetTitle("kaon")
 #histo.SetAxisRange(3.,10.)
 #histo.SetAxisRange(2.e3,8.e3,"Y")
 histo.Draw()
-c1.Print("oldJxCorrNK.pdf")
+c1.Print("deltaRtestBig.pdf")
 input('press enter to exit')
