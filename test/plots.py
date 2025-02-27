@@ -6,7 +6,7 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "deltaRtestBigNB.root"
+fileName = "deltaRsum.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
@@ -20,5 +20,5 @@ histo.SetTitle("Jpsi+kaon with the check applied")
 #histo.SetAxisRange(3.,10.)
 #histo.SetAxisRange(2.e3,8.e3,"Y")
 histo.Draw()
-c1.Print("deltaRtestBigNB.pdf")
+c1.Print("deltaRsum.pdf")
 input('press enter to exit')

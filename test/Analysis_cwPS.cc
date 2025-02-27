@@ -96,7 +96,7 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histoK =new TH1D("histoK","kaon; Minv; #events",500, 3.8,6.);
+  histoK =new TH1D("histoK","kaon; Minv; #events",2200, 3.8,6.);
   //histoPi =new TH1D("histoPi","pion; Minv; #events",500, 3.8, 6.);
   //histoPr =new TH1D("histoPr","proton; Minv; #events",500, 3.8, 6.);
   cout << "HERE Analysis::beginJob()" << endl;
