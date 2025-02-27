@@ -6,7 +6,7 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "deltaRtestBig.root"
+fileName = "deltaRtestBigNB.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
@@ -16,9 +16,9 @@ f.ls()
 c1 = TCanvas('cHisto','cHisto',600,600)
 #c1.SetLogy(1)
 histo = gROOT.FindObject('histoK')
-histo.SetTitle("kaon")
+histo.SetTitle("Jpsi+kaon with the check applied")
 #histo.SetAxisRange(3.,10.)
 #histo.SetAxisRange(2.e3,8.e3,"Y")
 histo.Draw()
-c1.Print("deltaRtestBig.pdf")
+c1.Print("deltaRtestBigNB.pdf")
 input('press enter to exit')

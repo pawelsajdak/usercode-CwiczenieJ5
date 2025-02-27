@@ -70,7 +70,7 @@ private:
   edm::ParameterSet theConfig;
   bool debug;
   unsigned int theEventCount;
-  TH1D *histoK, *histoPi, *histoPr;
+  TH1D *histoK; //, *histoPi, *histoPr;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT< vector<pat::PackedCandidate> > theCandidateToken;
@@ -96,9 +96,9 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histoK =new TH1D("histoK","kaon; Minv; #events",2200, 3.8,6.);
-  histoPi =new TH1D("histoPi","pion; Minv; #events",2200, 3.8, 6.);
-  histoPr =new TH1D("histoPr","proton; Minv; #events",2200, 3.8, 6.);
+  histoK =new TH1D("histoK","kaon; Minv; #events",500, 3.8,6.);
+  //histoPi =new TH1D("histoPi","pion; Minv; #events",500, 3.8, 6.);
+  //histoPr =new TH1D("histoPr","proton; Minv; #events",500, 3.8, 6.);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -109,14 +109,16 @@ void Analysis::endJob()
   //write histogram data
   histoK->Write();
   cout << "Wrote histoK \n";
+  /*
   histoPi->Write();
   cout << "Wrote histoPi \n";
   histoPr->Write();
   cout << "Wrote histoPr \n";
+  */
   myRootFile.Close();
   delete histoK;
-  delete histoPi;
-  delete histoPr;
+  //delete histoPi;
+  //delete histoPr;
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
@@ -172,6 +174,7 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         if (fabs(vjp.position().z()- trk1.vz())>0.3)continue;
         trackTTs.push_back(trackBuilder.build(trk1));
         
+        
         // Added check
         if(deltaR(trk1,*mu1Ref)<0.1) continue;
         if(deltaR(trk1,*mu2Ref)<0.1) continue;
@@ -187,6 +190,7 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         ROOT::Math::PxPyPzEVector lFullVectorK = lMuonsVector+lorentzVector(candMom, kaonMass);
         histoK->Fill(lFullVectorK.M());
 
+        /*
         // Pion
         ROOT::Math::PxPyPzEVector lFullVectorPi = lMuonsVector+lorentzVector(candMom, pionMass);
         histoPi->Fill(lFullVectorPi.M());
@@ -194,7 +198,7 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         // Proton
         ROOT::Math::PxPyPzEVector lFullVectorPr = lMuonsVector+lorentzVector(candMom, protonMass);
         histoPr->Fill(lFullVectorPr.M());
-
+        */
       }  
     }
   } 
