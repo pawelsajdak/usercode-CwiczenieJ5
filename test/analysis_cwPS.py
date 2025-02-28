@@ -49,7 +49,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
 
 process.analiza= cms.EDAnalyzer("Analysis",
   muonSrc = cms.InputTag("slimmedMuons"),
-  outHist = cms.string("deltaRtestBigNBwoCheck.root"),
+  outHist = cms.string("psi2S_test.root"),
   debug = cms.bool(True)
 )
 

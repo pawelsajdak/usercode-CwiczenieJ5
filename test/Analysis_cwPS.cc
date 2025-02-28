@@ -39,6 +39,7 @@ double pionMass = 0.139570;
 double protonMass = 0.938272;
 double lambdaMass = 1.115683;
 double phiMass = 1.019461;
+double psi2SMass = 3.686097;
 
 template <typename T> T sqr(T v) { return v*v; }
 
@@ -70,7 +71,7 @@ private:
   edm::ParameterSet theConfig;
   bool debug;
   unsigned int theEventCount;
-  TH1D *histoK; //, *histoPi, *histoPr;
+  TH1D *histoK, *histoPi, *histoPr;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT< vector<pat::PackedCandidate> > theCandidateToken;
@@ -96,9 +97,9 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histoK =new TH1D("histoK","kaon; Minv; #events",2200, 3.8,6.);
-  //histoPi =new TH1D("histoPi","pion; Minv; #events",500, 3.8, 6.);
-  //histoPr =new TH1D("histoPr","proton; Minv; #events",500, 3.8, 6.);
+  histoK =new TH1D("histoK","kaon; Minv; #events",1000, 2.0,20.0);
+  histoPi =new TH1D("histoPi","pion; Minv; #events",1000, 2.0,20.0);
+  histoPr =new TH1D("histoPr","proton; Minv; #events",1000, 2.0,20.0);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -109,16 +110,16 @@ void Analysis::endJob()
   //write histogram data
   histoK->Write();
   cout << "Wrote histoK \n";
-  /*
+  
   histoPi->Write();
   cout << "Wrote histoPi \n";
   histoPr->Write();
   cout << "Wrote histoPr \n";
-  */
+  
   myRootFile.Close();
   delete histoK;
-  //delete histoPi;
-  //delete histoPr;
+  delete histoPi;
+  delete histoPr;
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
@@ -152,7 +153,7 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
 
       ROOT::Math::PxPyPzEVector lMuonsVector = muon.p4()+muon2.p4();
       //Minv of two muons close to the J/psi peak
-      if(fabs(lMuonsVector.M()-jpsiMass)>0.1) continue;
+      if(fabs(lMuonsVector.M()-psi2SMass)>0.1) continue;
 
       // Could the two muons have a common vertex - vjp?
       std::vector<reco::TransientTrack> trackTTs;
@@ -190,7 +191,7 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         ROOT::Math::PxPyPzEVector lFullVectorK = lMuonsVector+lorentzVector(candMom, kaonMass);
         histoK->Fill(lFullVectorK.M());
 
-        /*
+        
         // Pion
         ROOT::Math::PxPyPzEVector lFullVectorPi = lMuonsVector+lorentzVector(candMom, pionMass);
         histoPi->Fill(lFullVectorPi.M());
@@ -198,7 +199,7 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         // Proton
         ROOT::Math::PxPyPzEVector lFullVectorPr = lMuonsVector+lorentzVector(candMom, protonMass);
         histoPr->Fill(lFullVectorPr.M());
-        */
+        
       }  
     }
   } 
