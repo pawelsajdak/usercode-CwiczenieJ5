@@ -71,7 +71,7 @@ private:
   edm::ParameterSet theConfig;
   bool debug;
   unsigned int theEventCount;
-  TH1D *histoK, *histoPi, *histoPr;
+  TH1D *histoK, *hdeltaR;//, *histoPi, *histoPr;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT< vector<pat::PackedCandidate> > theCandidateToken;
@@ -98,8 +98,9 @@ void Analysis::beginJob()
 {
   //create a histogram
   histoK =new TH1D("histoK","kaon; Minv; #events",1000, 2.0,20.0);
-  histoPi =new TH1D("histoPi","pion; Minv; #events",1000, 2.0,20.0);
-  histoPr =new TH1D("histoPr","proton; Minv; #events",1000, 2.0,20.0);
+  hdeltaR = new TH1D("hdeltaR","deltaR;Minv;",1000,0.01,0.5);
+  //histoPi =new TH1D("histoPi","pion; Minv; #events",1000, 2.0,20.0);
+  //histoPr =new TH1D("histoPr","proton; Minv; #events",1000, 2.0,20.0);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -110,16 +111,18 @@ void Analysis::endJob()
   //write histogram data
   histoK->Write();
   cout << "Wrote histoK \n";
-  
+  hdeltaR->Write();
+  /*
   histoPi->Write();
   cout << "Wrote histoPi \n";
   histoPr->Write();
   cout << "Wrote histoPr \n";
-  
+  */
   myRootFile.Close();
   delete histoK;
-  delete histoPi;
-  delete histoPr;
+  delete hdeltaR;
+  //delete histoPi;
+  //delete histoPr;
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
@@ -153,7 +156,7 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
 
       ROOT::Math::PxPyPzEVector lMuonsVector = muon.p4()+muon2.p4();
       //Minv of two muons close to the J/psi peak
-      if(fabs(lMuonsVector.M()-psi2SMass)>0.1) continue;
+      if(fabs(lMuonsVector.M()-jpsiMass)>0.1) continue;
 
       // Could the two muons have a common vertex - vjp?
       std::vector<reco::TransientTrack> trackTTs;
@@ -177,8 +180,8 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         
         
         // Added check
-        if(deltaR(trk1,*mu1Ref)<0.1) continue;
-        if(deltaR(trk1,*mu2Ref)<0.1) continue;
+        if(deltaR(trk1,*mu1Ref)<0.01) continue;
+        if(deltaR(trk1,*mu2Ref)<0.01) continue;
         
 
         reco::Vertex vBX(TransientVertex(kvf.vertex(trackTTs)));
@@ -190,8 +193,13 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         math::XYZVector candMom = ic1->momentum();
         ROOT::Math::PxPyPzEVector lFullVectorK = lMuonsVector+lorentzVector(candMom, kaonMass);
         histoK->Fill(lFullVectorK.M());
+        // deltaR
+        double MmmK = lFullVectorK.M();
+        if(MmmK>4.4 && MmmK<4.8){
+          hdeltaR->Fill(std::min(deltaR(trk1,*mu1Ref),deltaR(trk1,*mu2Ref)));
+        } 
 
-        
+        /*
         // Pion
         ROOT::Math::PxPyPzEVector lFullVectorPi = lMuonsVector+lorentzVector(candMom, pionMass);
         histoPi->Fill(lFullVectorPi.M());
@@ -199,7 +207,7 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         // Proton
         ROOT::Math::PxPyPzEVector lFullVectorPr = lMuonsVector+lorentzVector(candMom, protonMass);
         histoPr->Fill(lFullVectorPr.M());
-        
+        */
       }  
     }
   } 
