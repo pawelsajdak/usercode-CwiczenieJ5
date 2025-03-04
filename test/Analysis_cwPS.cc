@@ -71,7 +71,7 @@ private:
   edm::ParameterSet theConfig;
   bool debug;
   unsigned int theEventCount;
-  TH1D *histoK, *histoPi, *histoPr;
+  TH1D *histo_probvBX, *histo_probvBX_comp, *histoK, *histoPi, *histoPr;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT< vector<pat::PackedCandidate> > theCandidateToken;
@@ -97,6 +97,8 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
+  histo_probvBX = new TH1D("histo_probvBX","prob vBX; Probability;# Counts",100,0.0,1.0);
+  histo_probvBX_comp = new TH1D("histo_probvBX_comp","prob vBX to compare; Probability;# Counts",100,0.0,1.0);
   histoK =new TH1D("histoK","kaon; Minv; #events",10000, 2.0,10.0);
   //hdeltaR = new TH1D("hdeltaR","deltaR;Minv;",1000,0.01,0.5);
   histoPi =new TH1D("histoPi","pion; Minv; #events",10000, 2.0,10.0);
@@ -109,16 +111,21 @@ void Analysis::endJob()
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
   //write histogram data
+  histo_probvBX->Write();
+  histo_probvBX_comp->Write();
   histoK->Write();
   cout << "Wrote histoK \n";
   //hdeltaR->Write();
-  
+  /*
   histoPi->Write();
   cout << "Wrote histoPi \n";
   histoPr->Write();
   cout << "Wrote histoPr \n";
-  
+  */
+
   myRootFile.Close();
+  delete histo_probvBX;
+  delete histo_probvBX_comp;
   delete histoK;
   //delete hdeltaR;
   delete histoPi;
@@ -192,13 +199,17 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         math::XYZVector candMom = ic1->momentum();
         ROOT::Math::PxPyPzEVector lFullVectorK = lMuonsVector+lorentzVector(candMom, kaonMass);
         histoK->Fill(lFullVectorK.M());
-        
-        /*/ deltaR
+
+        // vBX probability for the "hill" (for Kaons)
         double MmmK = lFullVectorK.M();
         if(MmmK>4.4 && MmmK<4.8){
-          hdeltaR->Fill(std::min(deltaR(trk1,*mu1Ref),deltaR(trk1,*mu2Ref)));
-        } */
+          histo_probvBX->Fill(probvBX);
+        }
+        if(MmmK>4.8 && MmmK<5.0){
+          histo_probvBX_comp->Fill(probvBX);
+        }
 
+        /*
         // Pion
         ROOT::Math::PxPyPzEVector lFullVectorPi = lMuonsVector+lorentzVector(candMom, pionMass);
         histoPi->Fill(lFullVectorPi.M());
@@ -206,7 +217,8 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         // Proton
         ROOT::Math::PxPyPzEVector lFullVectorPr = lMuonsVector+lorentzVector(candMom, protonMass);
         histoPr->Fill(lFullVectorPr.M());
-        
+        */
+
       }  
     }
   } 
