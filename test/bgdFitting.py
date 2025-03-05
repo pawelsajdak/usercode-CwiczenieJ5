@@ -11,29 +11,29 @@ class Background:
             r.TF1.RejectPoint()
             return 0.0
 ##########################################
-histfilename = "JxCorrN.root"
+histfilename = "Xs_wdRcheck.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("histoPi")
+histo = histfile.Get("histoK")
 histo.SetDirectory(0)
 histfile.Close()
 
 fitRange = r.Fit.DataRange()
-fitRange.AddRange(3.8,4.1)
-fitRange.AddRange(4.6,4.8)
-fitRange.AddRange(5.4,5.8)
+fitRange.AddRange(3.9,4.5)
+fitRange.AddRange(4.8,5.1)
 b = Background()
-fitFunc = r.TF1("fitFunc",b,3.8,5.8,4)
-fitFunc.SetParameters(1.e6,1.,1.,350.)
+fitFunc = r.TF1("fitFunc",b,3.9,5.1,4)
+fitFunc.SetParameters(1.e3,1.,1.,250.)
 
 #r.Math.MinimizerOptions.SetDefaultTolerance(1.e-6)
 results = histo.Fit(fitFunc,"ERSL")
-funcFile = r.TFile.Open("NPibgd.root","RECREATE")
+
+funcFile = r.TFile.Open("JKdRcheckbgdfunc.root","RECREATE")
 fitFunc.Write("bgd")
 #funcFile.Close()
 
-with open('NPibgd.txt','a') as of:
+with open('JKdRcheckbgd.txt','a') as of:
     print(results, file=of)
-
+    
 canvas = r.TCanvas("canvas")
 canvas.cd()
 #canvas.SetLogy(True)
@@ -46,5 +46,5 @@ histo.SetStats(0)
 histo.Draw("h")
 
 
-canvas.Print("NPi_background.pdf")
+canvas.Print("JKdRcheckbgd.pdf")
 input('press enter to exit')

@@ -2,9 +2,9 @@
 import ROOT as r
 import sys
 
-histfilename = "JxCorrN.root"
+histfilename = "Xs_wdRcheck.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("histoPi")
+histo = histfile.Get("histoK")
 histo.SetDirectory(0)
 histfile.Close()
 
@@ -18,9 +18,9 @@ canvas.SetRightMargin(0.08)
 #canvas.SetLogy(True)
 
 
-#histo.SetAxisRange(3.5,6., "X")
+histo.SetAxisRange(3.5,6., "X")
 #histo.SetAxisRange(1900, 8.e3, "Y")
-histo.SetTitle("#it{J/#psi} + #it{#pi}^{#pm}; #it{M}_{inv} (GeV); # Events")
+histo.SetTitle("#it{J/#psi} + #it{K}^{#pm}; #it{M}_{inv} (GeV); # Events")
 histo.SetStats(0)
 
 r.gStyle.SetTitleFontSize(0.06)
@@ -35,7 +35,7 @@ histo.SetFillColor(19)
 #histo.SetLineColor(28)
 histo.Draw("h")
 
-
+'''
 funcfilename = "NPifuncs.root"
 funcfile = r.TFile.Open(funcfilename)
 Bfunc = r.gROOT.FindObject("Bfunc")
@@ -46,23 +46,23 @@ Bfunc.SetLineColor(3)
 Bfunc.Draw("same")
 Xfunc.SetLineColor(2)
 Xfunc.Draw("same")
-
 '''
+
 # Background line
-bgdfilename = "NPibgd.root"
+bgdfilename = "JKdRcheckbgdfunc.root"
 bgdfile = r.TFile.Open(bgdfilename)
 bgd = r.gROOT.FindObject("bgd")
 bgdparams = bgd.GetParameters()
 expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2))+[3]"
-bgdDrawFunc = r.TF1("bgdDrawFunc",expression,3.8,6.0,4)
+bgdDrawFunc = r.TF1("bgdDrawFunc",expression,3.9,6.0,4)
 bgdDrawFunc.SetParameters(bgdparams)
 
 canvas.cd()
-bgdDrawFunc.SetLineColor(6)
+bgdDrawFunc.SetLineColor(2)
 bgdDrawFunc.SetLineStyle(2)
 bgdDrawFunc.Draw("same")
-'''
 
+'''
 l = r.TLatex()
 l.SetTextFont(42)
 l.SetTextSize(0.06)
@@ -70,8 +70,8 @@ l.DrawLatex(4.45,1100., "#it{X}_{#it{#pi}}^{#pm}")
 l.DrawLatex(5.15,550.,"#it{B}^{#pm}")
 l.SetTextSize(0.035)
 l.DrawLatex(5.36,1180.,"|#it{M_{#mu#mu} - m_{J/#psi}}| < 0.1 GeV")
+'''
 
 
-
-canvas.Print("NPiwobgd.pdf")
+canvas.Print("JKdRcheckbgd.pdf")
 input('press enter to exit')
