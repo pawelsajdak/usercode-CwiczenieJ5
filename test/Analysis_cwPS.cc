@@ -71,7 +71,7 @@ private:
   edm::ParameterSet theConfig;
   bool debug;
   unsigned int theEventCount;
-  TH1D *histo_probvBX, *histo_probvBX_comp, *histoK, *histoPi, *histoPr;
+  TH1D *histodR, *histoK;//, *histoPi, *histoPr;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT< vector<pat::PackedCandidate> > theCandidateToken;
@@ -97,12 +97,10 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histo_probvBX = new TH1D("histo_probvBX","prob vBX; Probability;# Counts",100,0.0,1.0);
-  histo_probvBX_comp = new TH1D("histo_probvBX_comp","prob vBX to compare; Probability;# Counts",100,0.0,1.0);
+  histodR = new TH1D("histodR","#DeltaR for M_{J/#psiK} #in [3.8, 6.0]; min(#DeltaR);Counts",1000,0.0,0.01);
   histoK =new TH1D("histoK","kaon; Minv; #events",10000, 2.0,10.0);
-  //hdeltaR = new TH1D("hdeltaR","deltaR;Minv;",1000,0.01,0.5);
-  histoPi =new TH1D("histoPi","pion; Minv; #events",10000, 2.0,10.0);
-  histoPr =new TH1D("histoPr","proton; Minv; #events",10000, 2.0,10.0);
+  //histoPi =new TH1D("histoPi","pion; Minv; #events",10000, 2.0,10.0);
+  //histoPr =new TH1D("histoPr","proton; Minv; #events",10000, 2.0,10.0);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -111,8 +109,7 @@ void Analysis::endJob()
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
   //write histogram data
-  histo_probvBX->Write();
-  histo_probvBX_comp->Write();
+  histodR->Write();
   histoK->Write();
   cout << "Wrote histoK \n";
   //hdeltaR->Write();
@@ -124,12 +121,10 @@ void Analysis::endJob()
   */
 
   myRootFile.Close();
-  delete histo_probvBX;
-  delete histo_probvBX_comp;
+  delete histodR;
   delete histoK;
-  //delete hdeltaR;
-  delete histoPi;
-  delete histoPr;
+  //delete histoPi;
+  //delete histoPr;
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
@@ -190,23 +185,17 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         double probvBX = TMath::Prob(vBX.chi2(),vBX.ndof());
         trackTTs.pop_back();  
         if (probvBX<0.15) continue;
-        
-        // Added check
-        if(deltaR(trk1,*mu1Ref)<0.01) continue;
-        if(deltaR(trk1,*mu2Ref)<0.01) continue;
-
+       
         // Kaon
         math::XYZVector candMom = ic1->momentum();
         ROOT::Math::PxPyPzEVector lFullVectorK = lMuonsVector+lorentzVector(candMom, kaonMass);
         histoK->Fill(lFullVectorK.M());
 
-        // vBX probability for the "hill" (for Kaons)
-        double MmmK = lFullVectorK.M();
-        if(MmmK>4.4 && MmmK<4.8){
-          histo_probvBX->Fill(probvBX);
-        }
-        if(MmmK>4.8 && MmmK<5.0){
-          histo_probvBX_comp->Fill(probvBX);
+         
+        // DeltaR
+        double MmmK = lFullVectorK.M(); //invariant mass of two J/psi muons and a kaon
+        if(MmmK>3.8 && MmmK<6.0){
+          histodR->Fill(std::min(deltaR(trk1,*mu1Ref),deltaR(trk1,*mu2Ref)));
         }
 
         /*
