@@ -97,9 +97,9 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histoK =new TH1D("histoK","kaon; Minv; #events",10000, 2.0,8.0);
-  histoPi =new TH1D("histoPi","pion; Minv; #events",10000, 2.0,8.0);
-  histoPr =new TH1D("histoPr","proton; Minv; #events",10000, 2.0,8.0);
+  histoK =new TH1D("histoK","kaon; Minv; #events",10000, 2.0,15.0);
+  histoPi =new TH1D("histoPi","pion; Minv; #events",10000, 2.0,15.0);
+  histoPr =new TH1D("histoPr","proton; Minv; #events",10000, 2.0,15.0);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -174,8 +174,6 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         const reco::Track & trk1 = ic1->pseudoTrack();
         if (fabs(vjp.position().z()- trk1.vz())>0.3)continue;
         trackTTs.push_back(trackBuilder.build(trk1));
-        
-        
         reco::Vertex vBX(TransientVertex(kvf.vertex(trackTTs)));
         double probvBX = TMath::Prob(vBX.chi2(),vBX.ndof());
         trackTTs.pop_back();  
@@ -184,19 +182,46 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         // deltaR check
         if(std::min(deltaR(trk1,*mu1Ref),deltaR(trk1,*mu2Ref))<0.0003) continue;
 
-        // Kaon
-        math::XYZVector candMom = ic1->momentum();
-        ROOT::Math::PxPyPzEVector lFullVectorK = lMuonsVector+lorentzVector(candMom, kaonMass);
-        histoK->Fill(lFullVectorK.M());
+        ///////////SECOND PACKED CANDIDATE///////////////
+        trackTTs.push_back(trackBuilder.build(trk1)); // was removed, now added again
+        math::XYZVector cand1Mom = ic1->momentum();
+        for (std::vector<pat::PackedCandidate>::const_iterator ic2 = ic1+1; ic2 < candidates.end(); ic2++) 
+        {
+          if(abs(ic2->pdgId()) != 211 || !ic2->hasTrackDetails() || ic2->pt() < 2. || ic2->charge()*ic1->charge() !=-1) continue;
 
-        // Pion
-        ROOT::Math::PxPyPzEVector lFullVectorPi = lMuonsVector+lorentzVector(candMom, pionMass);
-        histoPi->Fill(lFullVectorPi.M());
+          // Could J/psi and both candidates come from a common vertex - vJXX?
+          const reco::Track & trk2 = ic2->pseudoTrack();
+          if (fabs(vBX.position().z()- trk2.vz())>0.3)continue;
+          
+          trackTTs.push_back(trackBuilder.build(trk2));
+          reco::Vertex vJXX(TransientVertex(kvf.vertex(trackTTs)));
+          double probvJXX = TMath::Prob(vJXX.chi2(),vJXX.ndof());
+          trackTTs.pop_back();  
+          if (probvJXX<0.15) continue;
 
-        // Proton
-        ROOT::Math::PxPyPzEVector lFullVectorPr = lMuonsVector+lorentzVector(candMom, protonMass);
-        histoPr->Fill(lFullVectorPr.M());
-        
+          // deltaR check
+          if(std::min(deltaR(trk2,*mu1Ref),deltaR(trk2,*mu2Ref))<0.0003) continue;
+
+          // HISTOGRAMS
+          //std::cout << "trackTTs.size() [3?]: "<< trackTTs.size() << std::endl;
+          math::XYZVector cand2Mom = ic2->momentum();
+
+          // two Kaons
+          ROOT::Math::PxPyPzEVector lFullVectorK = lMuonsVector+lorentzVector(cand1Mom, kaonMass)+lorentzVector(cand2Mom,kaonMass);
+          histoK->Fill(lFullVectorK.M());
+
+          // two Pions
+          ROOT::Math::PxPyPzEVector lFullVectorPi = lMuonsVector+lorentzVector(cand1Mom, pionMass)+lorentzVector(cand2Mom,pionMass);
+          histoPi->Fill(lFullVectorPi.M());
+
+          // two Protons
+          ROOT::Math::PxPyPzEVector lFullVectorPr = lMuonsVector+lorentzVector(cand1Mom, protonMass)+lorentzVector(cand2Mom,protonMass);
+          histoPr->Fill(lFullVectorPr.M());
+
+        }
+        trackTTs.pop_back();  // removes trk1
+        ///////////////////////
+
       }  
     }
   } 
