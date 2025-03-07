@@ -71,7 +71,7 @@ private:
   edm::ParameterSet theConfig;
   bool debug;
   unsigned int theEventCount;
-  TH1D *histodR, *histoK;//, *histoPi, *histoPr;
+  TH1D *histoK, *histoPi, *histoPr;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT< vector<pat::PackedCandidate> > theCandidateToken;
@@ -97,10 +97,9 @@ Analysis::~Analysis()
 void Analysis::beginJob()
 {
   //create a histogram
-  histodR = new TH1D("histodR","#DeltaR for M_{J/#psiK} #in [3.8, 6.0]; min(#DeltaR);Counts",1000,0.0,0.01);
-  histoK =new TH1D("histoK","kaon; Minv; #events",10000, 2.0,10.0);
-  //histoPi =new TH1D("histoPi","pion; Minv; #events",10000, 2.0,10.0);
-  //histoPr =new TH1D("histoPr","proton; Minv; #events",10000, 2.0,10.0);
+  histoK =new TH1D("histoK","kaon; Minv; #events",10000, 2.0,8.0);
+  histoPi =new TH1D("histoPi","pion; Minv; #events",10000, 2.0,8.0);
+  histoPr =new TH1D("histoPr","proton; Minv; #events",10000, 2.0,8.0);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -109,22 +108,18 @@ void Analysis::endJob()
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
   //write histogram data
-  histodR->Write();
   histoK->Write();
   cout << "Wrote histoK \n";
-  //hdeltaR->Write();
-  /*
   histoPi->Write();
   cout << "Wrote histoPi \n";
   histoPr->Write();
   cout << "Wrote histoPr \n";
-  */
+  
 
   myRootFile.Close();
-  delete histodR;
   delete histoK;
-  //delete histoPi;
-  //delete histoPr;
+  delete histoPi;
+  delete histoPr;
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
@@ -185,20 +180,15 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         double probvBX = TMath::Prob(vBX.chi2(),vBX.ndof());
         trackTTs.pop_back();  
         if (probvBX<0.15) continue;
-       
+
+        // deltaR check
+        if(std::min(deltaR(trk1,*mu1Ref),deltaR(trk1,*mu2Ref))<0.0003) continue;
+
         // Kaon
         math::XYZVector candMom = ic1->momentum();
         ROOT::Math::PxPyPzEVector lFullVectorK = lMuonsVector+lorentzVector(candMom, kaonMass);
         histoK->Fill(lFullVectorK.M());
 
-         
-        // DeltaR
-        double MmmK = lFullVectorK.M(); //invariant mass of two J/psi muons and a kaon
-        if(MmmK>3.8 && MmmK<6.0){
-          histodR->Fill(std::min(deltaR(trk1,*mu1Ref),deltaR(trk1,*mu2Ref)));
-        }
-
-        /*
         // Pion
         ROOT::Math::PxPyPzEVector lFullVectorPi = lMuonsVector+lorentzVector(candMom, pionMass);
         histoPi->Fill(lFullVectorPi.M());
@@ -206,8 +196,7 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         // Proton
         ROOT::Math::PxPyPzEVector lFullVectorPr = lMuonsVector+lorentzVector(candMom, protonMass);
         histoPr->Fill(lFullVectorPr.M());
-        */
-
+        
       }  
     }
   } 
