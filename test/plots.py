@@ -6,7 +6,7 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "dRdistribution.root"
+fileName = "JXnewdR.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
@@ -15,12 +15,12 @@ f.ls()
 
 c1 = TCanvas('cHisto','cHisto',600,600)
 #c1.SetLogy(1)
-histo = gROOT.FindObject('histodR')
-histo.SetTitle("J/#psi + #it{K}^{#pm}\t M_{mmK} #in [3.8, 6.0]; min(#DeltaR);Counts")
+histo = gROOT.FindObject('histoPr')
+histo.SetTitle("J/#psi + #it{p}^{#pm} (#DeltaR > 0.0003); M_{inv};Counts")
 histo.GetXaxis().CenterTitle(True)
-histo.SetAxisRange(0.,0.0008)
+histo.SetAxisRange(4.2,7.9)
 #histo.SetAxisRange(0.,50.,"Y")
-histo.SetFillColor(19)
+#histo.SetFillColor(19)
 histo.Draw()
-c1.Print("dRdistribution_0008F.pdf")
+c1.Print("JPrnewdR.pdf")
 input('press enter to exit')
