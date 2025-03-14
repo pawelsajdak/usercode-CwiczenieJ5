@@ -6,7 +6,7 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "twoCandidates.root"
+fileName = "twoCandMass.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
@@ -15,12 +15,12 @@ f.ls()
 
 c1 = TCanvas('cHisto','cHisto',600,600)
 #c1.SetLogy(1)
-histo = gROOT.FindObject('histoPr')
-histo.SetTitle("#it{J/#psi} + #it{p}^{+}#it{p}^{-}; M_{inv};Counts")
+histo = gROOT.FindObject('hKaonPion')
+histo.SetTitle("K^{#pm}#pi^{#mp} from J/#psi vertex; M_{inv} (GeV);Counts")
 histo.GetXaxis().CenterTitle(True)
-histo.SetAxisRange(5.3,12.)
-#histo.SetAxisRange(0.,50.,"Y")
+histo.SetAxisRange(0.5,2.8)
+histo.SetAxisRange(25.e2,85.e2,"Y")
 #histo.SetFillColor(19)
 histo.Draw()
-c1.Print("twoPr.pdf")
+c1.Print("KP.pdf")
 input('press enter to exit')
