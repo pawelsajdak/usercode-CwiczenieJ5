@@ -20,7 +20,7 @@
 // #include "TrackingTools/IPTools/interface/IPTools.h"
 
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
-
+#include "DataFormats/TrackReco/interface/Track.h"
 
 #include "TH1D.h"
 #include "TH2D.h"
@@ -40,6 +40,7 @@ double protonMass = 0.938272;
 double lambdaMass = 1.115683;
 double phiMass = 1.019461;
 double psi2SMass = 3.686097;
+double BpmMass = 5.27941;
 
 template <typename T> T sqr(T v) { return v*v; }
 
@@ -71,10 +72,12 @@ private:
   edm::ParameterSet theConfig;
   bool debug;
   unsigned int theEventCount;
-  TH1D *hKaonKaon,*hPionPion,*hKaonPion;
+  TH1D* htrack_dR;
+  //TH1D *hKaonKaon,*hPionPion,*hKaonPion;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT< vector<pat::PackedCandidate> > theCandidateToken;
+  edm::EDGetTokenT< vector<reco::Vertex> > thePrimaryVertexToken;
   edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> theTrackBuilderToken;
 };
 
@@ -85,6 +88,7 @@ Analysis::Analysis(const edm::ParameterSet& conf)
   cout <<" CTORXX" << endl;
   theMuonToken = consumes< vector<pat::Muon> >( theConfig.getParameter<edm::InputTag>("muonSrc"));
   theCandidateToken     = consumes< vector<pat::PackedCandidate> > (edm::InputTag("packedPFCandidates"));
+  thePrimaryVertexToken = consumes< vector<reco::Vertex> > (edm::InputTag("offlineSlimmedPrimaryVerticesWithBS"));
   theTrackBuilderToken = esConsumes(edm::ESInputTag("", "TransientTrackBuilder"));
   if(theConfig.exists("debug")) debug = theConfig.getParameter<bool>("debug"); 
 }
@@ -96,11 +100,12 @@ Analysis::~Analysis()
 
 void Analysis::beginJob()
 {
-  //create a histogram
+  htrack_dR = new TH1D("htrack_dR","track dR",1000,0.0,0.1);
+  /*/create a histogram
   hKaonKaon = new TH1D("hKaonKaon","K+K- from Jpsi vertex;Minv;Counts",10000,0.,15.);
   hPionPion = new TH1D("hPionPion","#pi+#pi- from Jpsi vertex;Minv;Counts",10000,0.,15.);
   hKaonPion = new TH1D("hKaonPion","K#pm#pi#pm (opposite signs) from Jpsi vertex;Minv;Counts",10000,0.,15.);
-
+  */
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -109,14 +114,17 @@ void Analysis::endJob()
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
   //write histogram data
-  hKaonKaon->Write();
-  hPionPion->Write();
-  hKaonPion->Write();
+  //hKaonKaon->Write();
+  //hPionPion->Write();
+  //hKaonPion->Write();
 
+  htrack_dR->Write();
   myRootFile.Close();
-  delete hKaonKaon;
+  delete htrack_dR;
+  /*delete hKaonKaon;
   delete hPionPion;
   delete hKaonPion;
+  */
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
@@ -126,6 +134,7 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
   if (debug) std::cout << " -------------------------------- HERE Cwiczenie::analyze "<< std::endl;
   const vector<pat::Muon> & muons = ev.get(theMuonToken);
   const vector<pat::PackedCandidate> & candidates = ev.get(theCandidateToken);
+  const vector <reco::Vertex> & primVertices = ev.get(thePrimaryVertexToken);
   const auto & trackBuilder = es.getData(theTrackBuilderToken);
 
   if (debug) std::cout <<" number of      muons: " << muons.size() <<std::endl;
@@ -160,8 +169,8 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
       reco::Vertex vjp(TransientVertex(kvf.vertex(trackTTs)));
       double prob = TMath::Prob(vjp.chi2(),vjp.ndof());
       if (prob<0.1) continue;
-
-      // rescale muom momenta for exact jpsi mass
+     
+      // rescale muon momenta for exact jpsi mass
       double alpha=1.;
       math::XYZVector mom1 = im1->momentum();
       math::XYZVector mom2 = im2->momentum();
@@ -194,54 +203,39 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         // deltaR check
         if(std::min(deltaR(trk1,*mu1Ref),deltaR(trk1,*mu2Ref))<0.0003) continue;
 
-        ///////////SECOND PACKED CANDIDATE///////////////
-        trackTTs.push_back(trackBuilder.build(trk1)); // was removed, now added again
-        math::XYZVector cand1Mom = ic1->momentum();
-        for (std::vector<pat::PackedCandidate>::const_iterator ic2 = ic1+1; ic2 < candidates.end(); ic2++) 
+        // select vertices close to BpmMass
+        ROOT::Math::PxPyPzEVector lKVector = lorentzVector(ic1->momentum(),kaonMass);
+        ROOT::Math::PxPyPzEVector lJKVector = lMuonsVector + lKVector;  //Jpsi + K
+        if(fabs(lJKVector.M()-BpmMass)>0.05) continue;
+
+        // find the primary vertex
+        math::XYZVector BpmMom(lJKVector.Px(),lJKVector.Py(),lJKVector.Pz()); // 3-mom of Bpm
+
+        for(std::vector<reco::Vertex>::const_iterator ipv1 = primVertices.begin();ipv1<primVertices.end();ipv1++)
         {
-          if(abs(ic2->pdgId()) != 211 || !ic2->hasTrackDetails() || ic2->pt() < 2. || ic2->charge()*ic1->charge() !=-1) continue;
-
-          // Could J/psi and both candidates come from a common vertex - vJXX?
-          const reco::Track & trk2 = ic2->pseudoTrack();
-          if (fabs(vBX.position().z()- trk2.vz())>0.3)continue;
-          
-          trackTTs.push_back(trackBuilder.build(trk2));
-          reco::Vertex vJXX(TransientVertex(kvf.vertex(trackTTs)));
-          double probvJXX = TMath::Prob(vJXX.chi2(),vJXX.ndof());
-          trackTTs.pop_back();  
-          if (probvJXX<0.15) continue;
-
-          // deltaR check
-          if(std::min(deltaR(trk2,*mu1Ref),deltaR(trk2,*mu2Ref))<0.0003) continue;
-
-          // HISTOGRAMS
-          math::XYZVector cand2Mom = ic2->momentum();
-
-          // two Kaons
-          ROOT::Math::PxPyPzEVector lVectorKK = lorentzVector(cand1Mom, kaonMass)+lorentzVector(cand2Mom,kaonMass);
-          hKaonKaon->Fill(lVectorKK.M());
-
-          // two Pions
-          ROOT::Math::PxPyPzEVector lVectorPiPi = lorentzVector(cand1Mom, pionMass)+lorentzVector(cand2Mom,pionMass);
-          hPionPion->Fill(lVectorPiPi.M());
-
-          // Kaon and Pion
-          ROOT::Math::PxPyPzEVector lVectorKPi = lorentzVector(cand1Mom, kaonMass)+lorentzVector(cand2Mom,pionMass);
-          ROOT::Math::PxPyPzEVector lVectorPiK = lorentzVector(cand1Mom, pionMass)+lorentzVector(cand2Mom,kaonMass);
-          hKaonPion->Fill(lVectorKPi.M());
-          hKaonPion->Fill(lVectorPiK.M());
+          cout << "New Prime Vertex"<<endl;
+          //if(fabs(ipv1->z()-vBX.z())> 0.2) continue;  //ct~0.05 cm
+          //cout << "I survived"<<endl;
+          cout << ipv1->nTracks() << endl;
+          /*
+          for(reco::Vertex::trackRef_iterator itr1 = ipv1->tracks_begin();itr1<ipv1->tracks_end();itr1++) //loop over tracks of a primary vertex
+          {
+            reco::TrackBaseRef track = *itr1;
+            const math::XYZVector & trackMom = track->momentum();
+            std::cout << trackMom.mag2()<<std::endl;
+            double dR = deltaR(trackMom,BpmMom);
+            cout << "dR: "<<dR<<endl;
+            if(dR<0.1) htrack_dR->Fill(dR);
+          }
+          */
         }
-        trackTTs.pop_back();  // removes trk1
-        ///////////////////////
-
-      }  
-    }
-  } 
-    
-   
+          
+      }
+        
+    }  
+  }
   
   cout << "\n";
-
 
   if (debug) cout <<"*** Analyze event: " << ev.id()<<" analysed event count:"<<++theEventCount << endl;
 }
