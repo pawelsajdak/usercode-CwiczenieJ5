@@ -72,7 +72,7 @@ private:
   edm::ParameterSet theConfig;
   bool debug;
   unsigned int theEventCount;
-  TH1D* htrack_dR;
+  TH1D *hdistanceBpm, *hproperTime;
   //TH1D *hKaonKaon,*hPionPion,*hKaonPion;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
@@ -100,7 +100,8 @@ Analysis::~Analysis()
 
 void Analysis::beginJob()
 {
-  htrack_dR = new TH1D("htrack_dR","track dR",1000,0.0,0.1);
+  hdistanceBpm = new TH1D("hdistanceBpm","Bpm pathlength [cm]",1000,0.0,0.2);
+  hproperTime = new TH1D("hproperTime","Bpm proper lifetime",10000,0.0,0.2);
   /*/create a histogram
   hKaonKaon = new TH1D("hKaonKaon","K+K- from Jpsi vertex;Minv;Counts",10000,0.,15.);
   hPionPion = new TH1D("hPionPion","#pi+#pi- from Jpsi vertex;Minv;Counts",10000,0.,15.);
@@ -118,9 +119,11 @@ void Analysis::endJob()
   //hPionPion->Write();
   //hKaonPion->Write();
 
-  htrack_dR->Write();
+  hdistanceBpm->Write();
+  hproperTime->Write();
   myRootFile.Close();
-  delete htrack_dR;
+  delete hdistanceBpm;
+  delete hproperTime;
   /*delete hKaonKaon;
   delete hPionPion;
   delete hKaonPion;
@@ -139,29 +142,103 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
 
   if (debug) std::cout <<" number of      muons: " << muons.size() <<std::endl;
  
+  //std::vector< std::pair<reco::TransientTrack, reco::TransientTrack> > jpsis;
+  for (std::vector<pat::Muon>::const_iterator im1 = muons.begin(); im1 < muons.end(); im1++)
+  {
+    const pat::Muon & muon = *im1;
+    if(!im1->isGlobalMuon() || !im1->isTrackerMuon()) continue;
+    if(muon.pt()<3) continue;
+    reco::TrackRef mu1Ref = im1->track();
+    if (!mu1Ref)continue;
+
+    for (std::vector<pat::Muon>::const_iterator im2 = im1+1; im2 < muons.end(); im2++)
+    {
+      if(!im2->isGlobalMuon() || !im2->isTrackerMuon()) continue;
+      const pat::Muon & muon2 = *im2;
+      if(muon2.pt()<3 || muon.charge()*muon2.charge()!=-1) continue;
+      reco::TrackRef mu2Ref = im2->track();
+      if (!mu2Ref)continue;
+      if(fabs(muon.vz()-muon2.vz())>0.3) continue;
+
+      ROOT::Math::PxPyPzEVector lMuonsVector = muon.p4()+muon2.p4();
+      //Minv of two muons close to the J/psi peak
+      if(fabs(lMuonsVector.M()-jpsiMass)>0.1) continue;
+
+      // Could the two muons have a common vertex - vjp?
+      std::vector<reco::TransientTrack> trackTTs;
+      trackTTs.push_back(trackBuilder.build(mu1Ref));
+      trackTTs.push_back(trackBuilder.build(mu2Ref));
+      KalmanVertexFitter kvf(true);
+      reco::Vertex vjp(TransientVertex(kvf.vertex(trackTTs)));
+      double prob = TMath::Prob(vjp.chi2(),vjp.ndof());
+      if (prob<0.1) continue;
+     
+      // rescale muon momenta for exact jpsi mass
+      double alpha=1.;
+      math::XYZVector mom1 = im1->momentum();
+      math::XYZVector mom2 = im2->momentum();
+      {
+        double a = mom1.mag2()*mom2.mag2()-sqr(mom1.Dot(mom2));
+        double b = -sqr(jpsiMass)*mom1.Dot(mom2)+sqr(muonMass)*(mom1+mom2).mag2();
+        double c = -sqr(jpsiMass)*(sqr(jpsiMass)/4.-sqr(muonMass));
+        double delta= sqr(b)-4*a*c;
+        alpha = sqrt((-b+sqrt(delta))/2./a);
+      } 
+      lMuonsVector = lorentzVector((mom1+mom2)*alpha, jpsiMass);
+
+      
+
+
+      /////////////FIRST PACKED CANDIDATE///////////
+      for (std::vector<pat::PackedCandidate>::const_iterator ic1 = candidates.begin(); ic1 < candidates.end(); ic1++) 
+      {
+        if(abs(ic1->pdgId()) != 211 || !ic1->hasTrackDetails() || ic1->pt() < 2. || ic1->charge()==0) continue;
+        
+        // Could J/psi and the candidate (kaon,pion,proton) come from a common vertex - vBX?
+        const reco::Track & trk1 = ic1->pseudoTrack();
+        if (fabs(vjp.position().z()- trk1.vz())>0.3)continue;
+        trackTTs.push_back(trackBuilder.build(trk1));
+        reco::Vertex vBX(TransientVertex(kvf.vertex(trackTTs)));
+        double probvBX = TMath::Prob(vBX.chi2(),vBX.ndof());
+        trackTTs.pop_back();  
+        if (probvBX<0.15) continue;
+
+        // deltaR check
+        if(std::min(deltaR(trk1,*mu1Ref),deltaR(trk1,*mu2Ref))<0.0003) continue;
+
+        // select vertices close to BpmMass
+        ROOT::Math::PxPyPzEVector lKVector = lorentzVector(ic1->momentum(),kaonMass);
+        ROOT::Math::PxPyPzEVector lJKVector = lMuonsVector + lKVector;  //Jpsi + K
+        if(fabs(lJKVector.M()-BpmMass)>0.05) continue;
+
+        // find the primary vertex, for which the displacement vector (bpmDispl) to vBX has the smallest deltaR with BpmMom
+        // vBX is the vertex of Bpm decay
+        math::XYZVector BpmMom(lJKVector.Px(),lJKVector.Py(),lJKVector.Pz()); // 3-mom of Bpm
+        double dR_min = 1.0;  
+        double distanceBpm = 0.0; //path length of Bpm
+
         for(std::vector<reco::Vertex>::const_iterator ipv1 = primVertices.begin();ipv1<primVertices.end();ipv1++)
         {
-          cout << "New Primary Vertex: ("<<ipv1->x()<<", "<<ipv1->y()<<", "<<ipv1->z()<<")" <<endl;
-          ROOT::Math::XYZPoint testPoint(1.0,1.0,5.0);
-          ROOT::Math::XYZVector bpmDispl (testPoint-ipv1->position());
-          cout << "Displacement to (1.0,1.0,5.0): ("<<bpmDispl.x()<<", "<<bpmDispl.y()<<", "<<bpmDispl.z()<<")" <<endl;
+          if(fabs(ipv1->z()-vBX.z())> 0.2) continue;  //ct~0.05 cm
 
-          //if(fabs(ipv1->z()-vBX.z())> 0.2) continue;  //ct~0.05 cm
-          //cout << "I survived"<<endl;
-          
-          /*
-          for(reco::Vertex::trackRef_iterator itr1 = ipv1->tracks_begin();itr1<ipv1->tracks_end();itr1++) //loop over tracks of a primary vertex
-          {
-            reco::TrackBaseRef track = *itr1;
-            const math::XYZVector & trackMom = track->momentum();
-            std::cout << trackMom.mag2()<<std::endl;
-            double dR = deltaR(trackMom,BpmMom);
-            cout << "dR: "<<dR<<endl;
-            if(dR<0.1) htrack_dR->Fill(dR);
+          //cout << "New Primary Vertex: ("<<ipv1->x()<<", "<<ipv1->y()<<", "<<ipv1->z()<<")" <<endl;    
+          ROOT::Math::XYZVector bpmDispl (vBX.position()-ipv1->position());
+          double dR = deltaR(bpmDispl,BpmMom);
+          if(dR < dR_min){
+            dR_min = dR;
+            distanceBpm = TMath::Sqrt(bpmDispl.mag2());
           }
-          */
-        }       
-    
+          cout << "dR: " << dR <<endl;          
+        }
+        cout << "dR_min: "<< dR_min << " distanceBpm: "<<distanceBpm<<endl;
+        if(dR_min == 1.0) continue; //all dR were greater than 1.0
+        hdistanceBpm->Fill(distanceBpm);
+        double properTime = (BpmMass*distanceBpm)/(TMath::Sqrt(BpmMom.mag2()));
+        hproperTime->Fill(properTime);
+      }
+        
+    }  
+  }
   
   cout << "\n";
 
