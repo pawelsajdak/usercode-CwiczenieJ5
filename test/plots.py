@@ -6,7 +6,7 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "twoCandMass.root"
+fileName = "BpmTime.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
@@ -14,13 +14,13 @@ f = TFile(fileName)
 f.ls()
 
 c1 = TCanvas('cHisto','cHisto',600,600)
-#c1.SetLogy(1)
-histo = gROOT.FindObject('hKaonPion')
-histo.SetTitle("K^{#pm}#pi^{#mp} from J/#psi vertex; M_{inv} (GeV);Counts")
+c1.SetLogy(1)
+histo = gROOT.FindObject('hproperTime')
+histo.SetTitle("Lifetime of B^{#pm};t;Counts")
 histo.GetXaxis().CenterTitle(True)
-histo.SetAxisRange(0.5,2.8)
-histo.SetAxisRange(25.e2,85.e2,"Y")
+histo.SetAxisRange(0.0,0.03)
+#histo.SetAxisRange(25.e2,85.e2,"Y")
 #histo.SetFillColor(19)
 histo.Draw()
-c1.Print("KP.pdf")
+c1.Print("BpmTime.pdf")
 input('press enter to exit')

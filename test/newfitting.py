@@ -2,49 +2,45 @@
 import ROOT as r
 import sys
 
-peakname = "Bpm"
-xmin = 4.9
-xmax = 5.5
-par0 = 100.
+peakname = "BpmTau"
+xmin = 0.002
+xmax = 0.005
+#par0 = 100.
 #axmin = 3.5
 #axmax = 6.
 
 ##########################################
-histfilename = "JxCorrN.root"
+histfilename = "BpmTime.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("histoPi")
+histo = histfile.Get("hproperTime")
 histo.SetDirectory(0)
 histfile.Close()
 
-expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2)) + [3]*exp((-(x-[4])**2)/(2*[5]**2))+[6]"
-fitFunc = r.TF1("fitFunc",expression,xmin,xmax)
-fitFunc.SetParameters(par0,(xmin+xmax)/2,0.1,1.,1.,1.,1.)
-#Background parameters (from "NPibgd.txt")
-fitFunc.FixParameter(3,729052.)
-fitFunc.FixParameter(4,-2.79952)
-fitFunc.FixParameter(5,1.74473)
-fitFunc.FixParameter(6,314.618)
+#expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2)) + [3]*exp((-(x-[4])**2)/(2*[5]**2))+[6]"
+fitFunc = r.TF1("fitFunc","expo",xmin,xmax)
+fitFunc.SetParameters(5.4,-485.0)
 
-
-results = histo.Fit(fitFunc,"ERSL")
-funcFile = r.TFile.Open("NPifuncs.root","UPDATE")
-fitFunc.Write("Bfunc")
+results = histo.Fit(fitFunc,"ERSLB")
+#funcFile = r.TFile.Open("NPifuncs.root","UPDATE")
+#fitFunc.Write("Bfunc")
 #funcFile.Close()
 
-with open('NPiresults.txt','a') as of:
-    print(peakname,"\t",fitFunc.GetParameter(1),"\n", results, file=of)
+#with open('NPiresults.txt','a') as of:
+    #print(peakname,"\t",fitFunc.GetParameter(1),"\n", results, file=of)
+
+print("Lifetime: ",-1/fitFunc.GetParameter(1))
 
 canvas = r.TCanvas("canvas")
 canvas.cd()
-#canvas.SetLogy(True)
+canvas.SetLogy(True)
 
-#histo.SetAxisRange(axmin, axmax)
+histo.SetAxisRange(0.0,0.02)
 #histo.SetAxisRange(3.5, 6., "X")
 #histo.SetAxisRange(2.e3, 7.e3, "Y")
-histo.SetTitle(peakname+"\t {:.3f}".format(fitFunc.GetParameter(1))+"; Minv; #events")
-histo.SetStats(0)
+histo.SetTitle("Lifetime of B^{#pm};t;Counts")
+#histo.SetStats(0)
 histo.Draw("h")
 
 
-canvas.Print("NPi_"+peakname+".pdf")
+canvas.Print("BpmTau.pdf")
 input('press enter to exit')
