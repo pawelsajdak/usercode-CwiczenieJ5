@@ -88,7 +88,7 @@ Analysis::Analysis(const edm::ParameterSet& conf)
   cout <<" CTORXX" << endl;
   theMuonToken = consumes< vector<pat::Muon> >( theConfig.getParameter<edm::InputTag>("muonSrc"));
   theCandidateToken     = consumes< vector<pat::PackedCandidate> > (edm::InputTag("packedPFCandidates"));
-  thePrimaryVertexToken = consumes< vector<reco::Vertex> > (edm::InputTag("offlineSlimmedPrimaryVertices"));
+  thePrimaryVertexToken = consumes< vector<reco::Vertex> > (edm::InputTag("offlineSlimmedPrimaryVerticesWithBS"));
   theTrackBuilderToken = esConsumes(edm::ESInputTag("", "TransientTrackBuilder"));
   if(theConfig.exists("debug")) debug = theConfig.getParameter<bool>("debug"); 
 }

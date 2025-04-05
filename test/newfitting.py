@@ -10,7 +10,7 @@ xmax = 0.005
 #axmax = 6.
 
 ##########################################
-histfilename = "BpmTime.root"
+histfilename = "BpmTimeBS.root"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get("hproperTime")
 histo.SetDirectory(0)
@@ -18,7 +18,7 @@ histfile.Close()
 
 #expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2)) + [3]*exp((-(x-[4])**2)/(2*[5]**2))+[6]"
 fitFunc = r.TF1("fitFunc","expo",xmin,xmax)
-fitFunc.SetParameters(5.4,-485.0)
+#fitFunc.SetParameters(5.4,-485.0)
 
 results = histo.Fit(fitFunc,"ERSLB")
 #funcFile = r.TFile.Open("NPifuncs.root","UPDATE")
@@ -28,7 +28,7 @@ results = histo.Fit(fitFunc,"ERSLB")
 #with open('NPiresults.txt','a') as of:
     #print(peakname,"\t",fitFunc.GetParameter(1),"\n", results, file=of)
 
-print("Lifetime: ",-1/fitFunc.GetParameter(1))
+print("Lifetime: ",-1/fitFunc.GetParameter(1)/3.e10)
 
 canvas = r.TCanvas("canvas")
 canvas.cd()
