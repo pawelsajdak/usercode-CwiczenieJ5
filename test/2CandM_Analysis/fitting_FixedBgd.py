@@ -2,13 +2,13 @@
 import ROOT as r
 import sys
 
-peakname = "KK"
-xmin = 1.003
-xmax = 1.1
+peakname = "PP"
+xmin = 0.32
+xmax = 0.5
 ##########################################
 histfilename = "twoCandMass.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("hKaonKaon")
+histo = histfile.Get("hPionPion")
 histo.SetDirectory(0)
 histfile.Close()
 
@@ -17,13 +17,13 @@ bgdfilename = peakname+"bgdFunc.root"
 bgdfile = r.TFile.Open(bgdfilename)
 bgd = r.gROOT.FindObject("bgd")
 
-expression = "[0]+[2]*(x-[1])**2 + [3]*exp((-(x-[4])**2)/(2*[5]**2))"
-fitFunc = r.TF1("fitFunc",expression,xmin,xmax,6)
-fitFunc.SetParameters(1.,1.,1.,2.e3,1.016,0.005)
+# Fitting function
+expression = "[0]+[1]*log(x) + [2]*exp((-(x-[3])**2)/(2*[4]**2))"
+fitFunc = r.TF1("fitFunc",expression,xmin,xmax,5)
+fitFunc.SetParameters(1.,1.,500.,0.37,0.01)
 fitFunc.FixParameter(0,bgd.GetParameter(0))
 fitFunc.FixParameter(1,bgd.GetParameter(1))
-fitFunc.FixParameter(2,bgd.GetParameter(2))
-
+#fitFunc.FixParameter(2,bgd.GetParameter(2))
 
 
 results = histo.Fit(fitFunc,"ERSLB")
@@ -38,12 +38,13 @@ canvas = r.TCanvas("canvas")
 canvas.cd()
 #canvas.SetLogy(True)
 
-histo.SetAxisRange(xmin,xmax)
+histo.SetAxisRange(0.28,0.5)
 #histo.SetAxisRange(3.5, 6., "X")
-#histo.SetAxisRange(2.e3, 7.e3, "Y")
+histo.SetAxisRange(1500, 3.e3, "Y")
 #histo.SetTitle("Lifetime of B^{#pm};t;Counts")
 #histo.SetStats(0)
 histo.Draw("h")
+fitFunc.Draw("same")
 
 
 canvas.Print(peakname+"Fit.pdf")

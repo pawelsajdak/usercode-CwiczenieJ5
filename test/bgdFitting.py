@@ -6,27 +6,27 @@ import numpy as np
 class Background:
     def __call__(self, arr,par):
         if (fitRange.IsInside(arr[0])):        
-            return par[0] + par[2]*(arr[0]-par[1])**2
+            return par[0] + par[1]*r.TMath.Log(arr[0])
         else:
             r.TF1.RejectPoint()
             return 0.0
 ##########################################
 histfilename = "twoCandMass.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("hKaonKaon")
+histo = histfile.Get("hPionPion")
 histo.SetDirectory(0)
 histfile.Close()
 
-outname = "KKbgd"
-xmin = 1.003
-xmax = 1.1
+outname = "PPbgd"
+xmin = 0.42
+xmax = 0.58
 
 fitRange = r.Fit.DataRange()
-fitRange.AddRange(xmin,1.008)
-fitRange.AddRange(1.035,xmax)
+fitRange.AddRange(xmin,xmax)
+#fitRange.AddRange(1.035,xmax)
 b = Background()
-fitFunc = r.TF1("fitFunc",b,xmin,xmax,3)
-fitFunc.SetParameters(5.e3,1.09,-500.e3)
+fitFunc = r.TF1("fitFunc",b,xmin,xmax,2)
+#fitFunc.SetParameters(-4750.,0.32,6180.)
 
 #r.Math.MinimizerOptions.SetDefaultTolerance(1.e-6)
 results = histo.Fit(fitFunc,"ERSL")
@@ -40,10 +40,10 @@ with open(outname+'Fit.txt','a') as of:
     
 canvas = r.TCanvas("canvas")
 canvas.cd()
-canvas.SetLogy(True)
+#canvas.SetLogy(True)
 
 #histo.SetAxisRange(axmin, axmax)
-histo.SetAxisRange(xmin, xmax, "X")
+histo.SetAxisRange(xmin-0.1, xmax+0.1, "X")
 #histo.SetAxisRange(2.e3, 7.e3, "Y")
 #histo.SetTitle(peakname+"\t {:.3f}".format(fitFunc.GetParameter(1))+"; Minv; #events")
 histo.SetStats(0)

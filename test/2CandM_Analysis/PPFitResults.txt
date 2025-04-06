@@ -1,0 +1,39 @@
+****************************************
+Minimizer is Minuit2 / Migrad
+MinFCN                    =      69.3562
+Chi2                      =      138.712
+NDf                       =          117
+Edm                       =  6.93117e-06
+NCalls                    =           62
+p0                        =      3305.81                      	 (fixed)
+p1                        =      1152.65                      	 (fixed)
+p2                        =      547.823   +/-   16.2516       -16.1312     +16.3704      (Minos) 
+p3                        =     0.370232   +/-   0.000439747   -0.000439599 +0.000440196  (Minos) 
+p4                        =    0.0137403   +/-   0.000483714   -0.000475761 +0.000491889  (Minos) 
+
+****************************************
+Minimizer is Minuit2 / Migrad
+MinFCN                    =      69.3562
+Chi2                      =      138.712
+NDf                       =          117
+Edm                       =  6.93117e-06
+NCalls                    =           62
+p0                        =      3305.81                      	 (fixed)
+p1                        =      1152.65                      	 (fixed)
+p2                        =      547.823   +/-   16.2516       -16.1312     +16.3704      (Minos) 
+p3                        =     0.370232   +/-   0.000439747   -0.000439599 +0.000440196  (Minos) 
+p4                        =    0.0137403   +/-   0.000483714   -0.000475761 +0.000491889  (Minos) 
+
+peakname = "PP"
+xmin = 0.32
+xmax = 0.5
+##########################################
+histfilename = "twoCandMass.root"
+histfile = r.TFile.Open(histfilename,"READ")
+histo = histfile.Get("hPionPion")
+
+expression = "[0]+[1]*log(x) + [2]*exp((-(x-[3])**2)/(2*[4]**2))"
+fitFunc = r.TF1("fitFunc",expression,xmin,xmax,5)
+fitFunc.SetParameters(1.,1.,500.,0.37,0.01)
+fitFunc.FixParameter(0,bgd.GetParameter(0))
+fitFunc.FixParameter(1,bgd.GetParameter(1))
