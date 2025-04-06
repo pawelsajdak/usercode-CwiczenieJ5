@@ -5,46 +5,50 @@ import numpy as np
 
 class Background:
     def __call__(self, arr,par):
-        if (fitRange.IsInside(arr[0])):
-            return par[0]*np.exp((-(arr[0]-par[1])**2)/(2*par[2]**2))+par[3]
+        if (fitRange.IsInside(arr[0])):        
+            return par[0] + par[2]*(arr[0]-par[1])**2
         else:
             r.TF1.RejectPoint()
             return 0.0
 ##########################################
-histfilename = "Xs_wdRcheck.root"
+histfilename = "twoCandMass.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("histoK")
+histo = histfile.Get("hKaonKaon")
 histo.SetDirectory(0)
 histfile.Close()
 
+outname = "KKbgd"
+xmin = 1.003
+xmax = 1.1
+
 fitRange = r.Fit.DataRange()
-fitRange.AddRange(3.9,4.5)
-fitRange.AddRange(4.8,5.1)
+fitRange.AddRange(xmin,1.008)
+fitRange.AddRange(1.035,xmax)
 b = Background()
-fitFunc = r.TF1("fitFunc",b,3.9,5.1,4)
-fitFunc.SetParameters(1.e3,1.,1.,250.)
+fitFunc = r.TF1("fitFunc",b,xmin,xmax,3)
+fitFunc.SetParameters(5.e3,1.09,-500.e3)
 
 #r.Math.MinimizerOptions.SetDefaultTolerance(1.e-6)
 results = histo.Fit(fitFunc,"ERSL")
 
-funcFile = r.TFile.Open("JKdRcheckbgdfunc.root","RECREATE")
+funcFile = r.TFile.Open(outname+"Func.root","RECREATE")
 fitFunc.Write("bgd")
 #funcFile.Close()
 
-with open('JKdRcheckbgd.txt','a') as of:
+with open(outname+'Fit.txt','a') as of:
     print(results, file=of)
     
 canvas = r.TCanvas("canvas")
 canvas.cd()
-#canvas.SetLogy(True)
+canvas.SetLogy(True)
 
 #histo.SetAxisRange(axmin, axmax)
-#histo.SetAxisRange(3.5, 6., "X")
+histo.SetAxisRange(xmin, xmax, "X")
 #histo.SetAxisRange(2.e3, 7.e3, "Y")
 #histo.SetTitle(peakname+"\t {:.3f}".format(fitFunc.GetParameter(1))+"; Minv; #events")
 histo.SetStats(0)
 histo.Draw("h")
 
 
-canvas.Print("JKdRcheckbgd.pdf")
+canvas.Print(outname+".pdf")
 input('press enter to exit')

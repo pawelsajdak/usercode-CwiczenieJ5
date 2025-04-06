@@ -2,17 +2,13 @@
 import ROOT as r
 import sys
 
-peakname = "BpmTau"
-xmin = 0.002
-xmax = 0.005
-#par0 = 100.
-#axmin = 3.5
-#axmax = 6.
-
+peakname = "KK"
+xmin = 1.003
+xmax = 1.1
 ##########################################
-histfilename = "BpmTimeBS.root"
+histfilename = "twoCandMass.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("hproperTime")
+histo = histfile.Get("hKaonKaon")
 histo.SetDirectory(0)
 histfile.Close()
 
