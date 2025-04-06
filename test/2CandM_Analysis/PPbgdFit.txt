@@ -82,3 +82,14 @@ NCalls                    =          140
 p0                        =      3305.81   +/-   36.6025       -36.5947     +36.6074      (Minos) 
 p1                        =      1152.65   +/-   51.7584       -51.7612     +51.7515      (Minos) 
 
+return par[0] + par[1]*r.TMath.Log(arr[0])
+outname = "PPbgd"
+xmin = 0.42
+xmax = 0.58
+
+fitRange = r.Fit.DataRange()
+fitRange.AddRange(xmin,xmax)
+#fitRange.AddRange(1.035,xmax)
+b = Background()
+fitFunc = r.TF1("fitFunc",b,xmin,xmax,2)
+

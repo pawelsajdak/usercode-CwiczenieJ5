@@ -13,13 +13,13 @@ class Background:
 ##########################################
 histfilename = "twoCandMass.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("hPionPion")
+histo = histfile.Get("hKaonKaon")
 histo.SetDirectory(0)
 histfile.Close()
 
-outname = "PPbgd"
-xmin = 0.42
-xmax = 0.58
+outname = "KKbgd"
+xmin = 1.05
+xmax = 1.08
 
 fitRange = r.Fit.DataRange()
 fitRange.AddRange(xmin,xmax)
