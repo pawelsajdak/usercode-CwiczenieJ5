@@ -209,7 +209,7 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
         // select vertices close to BpmMass
         ROOT::Math::PxPyPzEVector lKVector = lorentzVector(ic1->momentum(),kaonMass);
         ROOT::Math::PxPyPzEVector lJKVector = lMuonsVector + lKVector;  //Jpsi + K
-        if(fabs(lJKVector.M()-BpmMass)>0.05) continue;
+        if(fabs(lJKVector.M()-BpmMass)>0.05) continue;  //sigma Bpm is 0.04
 
         // find the primary vertex, for which the displacement vector (bpmDispl) to vBX has the smallest deltaR with BpmMom
         // vBX is the vertex of Bpm decay
@@ -230,11 +230,12 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
           }
           cout << "dR: " << dR <<endl;          
         }
-        cout << "dR_min: "<< dR_min << " distanceBpm: "<<distanceBpm<<endl;
+        //cout << "dR_min: "<< dR_min << " distanceBpm: "<<distanceBpm<<endl;
         if(dR_min == 1.0) continue; //all dR were greater than 1.0
         hdistanceBpm->Fill(distanceBpm);
         double properTime = (BpmMass*distanceBpm)/(TMath::Sqrt(BpmMom.mag2()));
-        hproperTime->Fill(properTime);
+        cout << "dR_min:\t"<<dR_min<<"\t properTime:\t"<<properTime<<"\t distance:\t"<<distanceBpm << endl;
+        if(dR_min < 0.02) hproperTime->Fill(properTime);
       }
         
     }  
