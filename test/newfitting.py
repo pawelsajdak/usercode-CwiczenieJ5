@@ -2,19 +2,23 @@
 import ROOT as r
 import sys
 
-peakname = "KK"
-xmin = 1.003
-xmax = 1.1
+peakname = "BpmTau"
+xmin = 0.002
+xmax = 0.04
+#par0 = 100.
+#axmin = 3.5
+#axmax = 6.
+
 ##########################################
-histfilename = "twoCandMass.root"
+histfilename = "BpmLfTm.root"
 histfile = r.TFile.Open(histfilename,"READ")
-histo = histfile.Get("hKaonKaon")
+histo = histfile.Get("histo")
 histo.SetDirectory(0)
 histfile.Close()
 
 #expression = "[0]*exp((-(x-[1])**2)/(2*[2]**2)) + [3]*exp((-(x-[4])**2)/(2*[5]**2))+[6]"
 fitFunc = r.TF1("fitFunc","expo",xmin,xmax)
-#fitFunc.SetParameters(5.4,-485.0)
+fitFunc.SetParameters(6.3,-107.)
 
 results = histo.Fit(fitFunc,"ERSLB")
 #funcFile = r.TFile.Open("NPifuncs.root","UPDATE")
@@ -24,13 +28,14 @@ results = histo.Fit(fitFunc,"ERSLB")
 #with open('NPiresults.txt','a') as of:
     #print(peakname,"\t",fitFunc.GetParameter(1),"\n", results, file=of)
 
-print("Lifetime: ",-1/fitFunc.GetParameter(1)/3.e10)
+lifetime = -1/fitFunc.GetParameter(1)
+print("Lifetime: ",lifetime," +/- ",fitFunc.GetParError(1)*lifetime*lifetime)
 
 canvas = r.TCanvas("canvas")
 canvas.cd()
 canvas.SetLogy(True)
 
-histo.SetAxisRange(0.0,0.02)
+#histo.SetAxisRange(0.0,0.02)
 #histo.SetAxisRange(3.5, 6., "X")
 #histo.SetAxisRange(2.e3, 7.e3, "Y")
 histo.SetTitle("Lifetime of B^{#pm};t;Counts")
@@ -38,5 +43,5 @@ histo.SetTitle("Lifetime of B^{#pm};t;Counts")
 histo.Draw("h")
 
 
-canvas.Print("BpmTau.pdf")
+canvas.Print("BpmTauNNLog.pdf")
 input('press enter to exit')

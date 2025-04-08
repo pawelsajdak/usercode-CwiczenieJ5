@@ -1,0 +1,15 @@
+Minimizer is Minuit2 / Migrad
+MinFCN                    =      63.6073
+Chi2                      =      127.215
+NDf                       =          124
+Edm                       =  4.48635e-13
+NCalls                    =           52
+Constant                  =      6.31798   +/-   0.0146847     -0.0146975   +0.014669     (Minos) 
+Slope                     =     -108.129   +/-   1.10916       -1.11112     +1.10699      (Minos) 
+Lifetime:  0.009248211365228605  +/-  9.486616762854227e-05
+Info in <TCanvas::Print>: pdf file BpmTauNNLog.pdf has been created
+
+Lifetime was in units of 1.e-10 s. Here:
+(0.9248211365228605  +/-  0.009486616762854227) x1.e-12 s 
+
+Cut on dR_min: 0.2
