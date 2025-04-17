@@ -101,7 +101,7 @@ Analysis::~Analysis()
 
 void Analysis::beginJob()
 {
-  tLifetime = new TNtupleD("tLifetime","Jpsi lifetime","dR_min:properTime:distance");
+  tLifetime = new TNtupleD("tLifetime","Jpsi lifetime","dR_min:properTime:distance:deltaM");
 
   cout << "HERE Analysis::beginJob()" << endl;
 }
@@ -150,6 +150,8 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
       //Minv of two muons close to the J/psi peak
       if(fabs(lMuonsVector.M()-jpsiMass)>0.05) continue; // sigma Jpsi is 0.03
 
+      double deltaM = fabs(lMuonsVector.M()-jpsiMass);
+
       // Could the two muons have a common vertex - vjp?
       std::vector<reco::TransientTrack> trackTTs;
       trackTTs.push_back(trackBuilder.build(mu1Ref));
@@ -191,7 +193,7 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
       if(dR_min == 1.0) continue; //all dR were greater than 1.0
 
       double properTime = (jpsiMass*distanceJpsi)/(TMath::Sqrt(jpsiMom.mag2()));
-      tLifetime->Fill(dR_min,properTime,distanceJpsi);
+      tLifetime->Fill(dR_min,properTime,distanceJpsi,deltaM);
             
     }  
   }

@@ -3,12 +3,12 @@ import ROOT as r
 import sys
 import numpy as np
 
-tupleFile = r.TFile("jpsiLifetime.root","READ")
+tupleFile = r.TFile("jpsiLifetime_wdM.root","READ")
 tLifetime = tupleFile.Get("tLifetime")
 # crashes when one closes the file with TNtuple(D)
 
-histo = r.TH1D("histo","dR_min < 0.15;properTime;Counts",1000,0.0,0.3)
-tLifetime.Project("histo","properTime","dR_min < 0.15")
+histo = r.TH1D("histo","temp",1000,0.0,0.1)
+tLifetime.Project("histo","properTime","deltaM > 0.04 && dR_min < 0.2")
 
 canvas = r.TCanvas("canvas")
 canvas.cd()
