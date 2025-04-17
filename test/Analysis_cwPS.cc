@@ -73,7 +73,7 @@ private:
   edm::ParameterSet theConfig;
   bool debug;
   unsigned int theEventCount;
-  TNtupleD* tLifetime;
+  TNtupleD* tBpmLifetime;
 
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
@@ -101,7 +101,7 @@ Analysis::~Analysis()
 
 void Analysis::beginJob()
 {
-  tLifetime = new TNtupleD("tLifetime","Jpsi lifetime","dR_min:properTime:distance:deltaM");
+  tBpmLifetime = new TNtupleD("tBpmLifetime","Bpm lifetime","dR_min:properTime:distance:deltaMJ_psi:deltaM_Bpm");
 
   cout << "HERE Analysis::beginJob()" << endl;
 }
@@ -111,8 +111,8 @@ void Analysis::endJob()
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
   
-  tLifetime->Write();
-  delete tLifetime;
+  tBpmLifetime->Write();
+  delete tBpmLifetime;
   
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
@@ -122,7 +122,7 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
 {
   if (debug) std::cout << " -------------------------------- HERE Cwiczenie::analyze "<< std::endl;
   const vector<pat::Muon> & muons = ev.get(theMuonToken);
-  //const vector<pat::PackedCandidate> & candidates = ev.get(theCandidateToken);
+  const vector<pat::PackedCandidate> & candidates = ev.get(theCandidateToken);
   const vector <reco::Vertex> & primVertices = ev.get(thePrimaryVertexToken);
   const auto & trackBuilder = es.getData(theTrackBuilderToken);
 
@@ -148,9 +148,9 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
 
       ROOT::Math::PxPyPzEVector lMuonsVector = muon.p4()+muon2.p4();
       //Minv of two muons close to the J/psi peak
-      if(fabs(lMuonsVector.M()-jpsiMass)>0.05) continue; // sigma Jpsi is 0.03
+      if(fabs(lMuonsVector.M()-jpsiMass)>0.1) continue; // sigma Jpsi is 0.03
 
-      double deltaM = fabs(lMuonsVector.M()-jpsiMass);
+      double deltaM = lMuonsVector.M()-jpsiMass;
 
       // Could the two muons have a common vertex - vjp?
       std::vector<reco::TransientTrack> trackTTs;
@@ -174,27 +174,51 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
       } 
       lMuonsVector = lorentzVector((mom1+mom2)*alpha, jpsiMass);
 
-      /////////////// J/PSI LIFETIME  ////////////////////
-      ROOT::Math::XYZVector jpsiMom(lMuonsVector.Px(),lMuonsVector.Py(),lMuonsVector.Pz()); // 3-mom of Jpsi
-      double dR_min = 1.0;
-      double distanceJpsi = 0.0;
 
-      for(std::vector<reco::Vertex>::const_iterator ipv1 = primVertices.begin();ipv1<primVertices.end();ipv1++)
+      /////////////FIRST PACKED CANDIDATE///////////
+      for (std::vector<pat::PackedCandidate>::const_iterator ic1 = candidates.begin(); ic1 < candidates.end(); ic1++) 
       {
-        ROOT::Math::XYZVector jpsiDispl (vjp.position()-ipv1->position());
-        double dR = deltaR(jpsiDispl,jpsiMom);
-        if(dR < dR_min){
-          dR_min = dR;
-          distanceJpsi = TMath::Sqrt(jpsiDispl.mag2());
+        if(abs(ic1->pdgId()) != 211 || !ic1->hasTrackDetails() || ic1->pt() < 2. || ic1->charge()==0) continue;
+        
+        // Could J/psi and the candidate (kaon,pion,proton) come from a common vertex - vBX?
+        const reco::Track & trk1 = ic1->pseudoTrack();
+        if (fabs(vjp.position().z()- trk1.vz())>0.3)continue;
+        trackTTs.push_back(trackBuilder.build(trk1));
+        reco::Vertex vBX(TransientVertex(kvf.vertex(trackTTs)));
+        double probvBX = TMath::Prob(vBX.chi2(),vBX.ndof());
+        trackTTs.pop_back();  
+        if (probvBX<0.15) continue;
+
+        // deltaR check
+        if(std::min(deltaR(trk1,*mu1Ref),deltaR(trk1,*mu2Ref))<0.0003) continue;
+
+        // select vertices close to BpmMass
+        ROOT::Math::PxPyPzEVector lKVector = lorentzVector(ic1->momentum(),kaonMass);
+        ROOT::Math::PxPyPzEVector lJKVector = lMuonsVector + lKVector;  //Jpsi + K
+        if(fabs(lJKVector.M()-BpmMass)>0.1) continue;  //sigma Bpm is 0.04
+        double deltaM_Bpm = lJKVector.M()-BpmMass;
+
+
+        /////////////// LIFETIME ////////////////////
+        ROOT::Math::XYZVector BpmMom(lJKVector.Px(),lJKVector.Py(),lJKVector.Pz()); // 3-mom of Bpm
+        double dR_min = 1.0;
+        double distanceBpm = 0.0;
+
+        for(std::vector<reco::Vertex>::const_iterator ipv1 = primVertices.begin();ipv1<primVertices.end();ipv1++)
+        {
+          ROOT::Math::XYZVector BpmDispl (vBX.position()-ipv1->position());
+          double dR = deltaR(BpmDispl,BpmMom);
+          if(dR < dR_min){
+            dR_min = dR;
+            distanceBpm = TMath::Sqrt(BpmDispl.mag2());
+          }     
         }
-        cout << "dR: " << dR <<endl;          
-      }
 
-      if(dR_min == 1.0) continue; //all dR were greater than 1.0
+        if(dR_min == 1.0) continue; //all dR were greater than 1.0
 
-      double properTime = (jpsiMass*distanceJpsi)/(TMath::Sqrt(jpsiMom.mag2()));
-      tLifetime->Fill(dR_min,properTime,distanceJpsi,deltaM);
-            
+        double properTime = (BpmMass*distanceBpm)/(TMath::Sqrt(BpmMom.mag2()));
+        tBpmLifetime->Fill(dR_min,properTime,distanceBpm,deltaM,deltaM_Bpm);
+      }      
     }  
   }
   
