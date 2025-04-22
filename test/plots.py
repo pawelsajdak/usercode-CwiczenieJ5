@@ -6,7 +6,7 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "twoCandMass.root"
+fileName = "KK_B0s.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
@@ -15,11 +15,15 @@ f.ls()
 
 c1 = TCanvas('cHisto','cHisto',600,600)
 #c1.SetLogy(1)
-histo = gROOT.FindObject('hKaonPion')
+histo = gROOT.FindObject('hKaonKaon')
+
+
 #histo.SetTitle("PP")
 histo.GetXaxis().CenterTitle(True)
-histo.SetAxisRange(0.7,1.2)
-histo.SetAxisRange(1.e3,10.e3,"Y")
+histo.SetAxisRange(0.9,1.2)   # 601-1001    10 000 bins overall
+
+
+#histo.SetAxisRange(1.e3,10.e3,"Y")
 #histo.SetFillColor(19)
 histo.Draw()
 c1.Print("temp.pdf")

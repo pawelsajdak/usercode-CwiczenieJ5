@@ -2,11 +2,11 @@
 import ROOT as r
 import sys
 
-peakname = "KK"
-xmin = 1.012
-xmax = 1.07
+peakname = "KK_B0s_"
+xmin = 0.99
+xmax = 1.08
 ##########################################
-histfilename = "twoCandMass.root"
+histfilename = "KK_B0s.root"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get("hKaonKaon")
 histo.SetDirectory(0)
@@ -18,9 +18,9 @@ bgdfile = r.TFile.Open(bgdfilename)
 bgd = r.gROOT.FindObject("bgd")
 
 # Fitting function
-expression = "[0]+[1]*log(x) + [2]*exp((-(x-[3])**2)/(2*[4]**2))"
+expression = "[0]+[1]*x + [2]*exp((-(x-[3])**2)/(2*[4]**2))"
 fitFunc = r.TF1("fitFunc",expression,xmin,xmax,5)
-fitFunc.SetParameters(1.,1.,2000.,1.02,0.005)
+fitFunc.SetParameters(1.,1.,200.,1.02,0.005)
 fitFunc.FixParameter(0,bgd.GetParameter(0))
 fitFunc.FixParameter(1,bgd.GetParameter(1))
 #fitFunc.FixParameter(2,bgd.GetParameter(2))

@@ -6,24 +6,24 @@ import numpy as np
 class Background:
     def __call__(self, arr,par):
         if (fitRange.IsInside(arr[0])):        
-            return par[0] + par[1]*r.TMath.Log(arr[0])
+            return par[0] + par[1]*arr[0]
         else:
             r.TF1.RejectPoint()
             return 0.0
 ##########################################
-histfilename = "twoCandMass.root"
+histfilename = "KK_B0s.root"
 histfile = r.TFile.Open(histfilename,"READ")
 histo = histfile.Get("hKaonKaon")
 histo.SetDirectory(0)
 histfile.Close()
 
-outname = "KKbgd"
-xmin = 1.05
+outname = "KK_B0s_bgd"
+xmin = 0.99
 xmax = 1.08
 
 fitRange = r.Fit.DataRange()
-fitRange.AddRange(xmin,xmax)
-#fitRange.AddRange(1.035,xmax)
+fitRange.AddRange(xmin,1.01)
+fitRange.AddRange(1.04,xmax)
 b = Background()
 fitFunc = r.TF1("fitFunc",b,xmin,xmax,2)
 #fitFunc.SetParameters(-4750.,0.32,6180.)
