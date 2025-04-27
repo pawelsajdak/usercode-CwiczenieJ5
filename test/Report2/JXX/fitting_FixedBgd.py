@@ -2,9 +2,9 @@
 import ROOT as r
 import sys
 
-histname = "histoK10"
-xmin = 5.0
-xmax = 6.0
+histname = "histoPi20"
+xmin = 4.6
+xmax = 5.8
 ##########################################
 histfilename = "rebin3partMinv.root"
 histfile = r.TFile.Open(histfilename,"READ")
@@ -18,23 +18,23 @@ bgdfile = r.TFile.Open(bgdfilename)
 bgd = bgdfile.Get("bgd")
 
 # Fitting function
-expression = "[0]+[1]*x+[2]*x*x + [3]*exp((-(x-[4])**2)/(2*[5]**2)) + [6]*exp((-(x-[7])**2)/(2*[8]**2))"
-fitFunc = r.TF1("fitFunc",expression,xmin,xmax,9)
-fitFunc.SetParameters(1.,1.,1.,300.,5.4,0.1,500.,5.35,0.01)
-fitFunc.SetParameter(0,bgd.GetParameter(0))
-fitFunc.SetParameter(1,bgd.GetParameter(1))
-fitFunc.SetParameter(2,bgd.GetParameter(2))
+expression = "[0]+[1]*x+[2]*x*x + [3]*exp((-(x-[4])**2)/(2*[5]**2))"# + [6]*exp((-(x-[7])**2)/(2*[8]**2))"
+fitFunc = r.TF1("fitFunc",expression,xmin,xmax,6)
+fitFunc.SetParameters(1.,1.,1.,1000.,5.15,0.1)
+fitFunc.FixParameter(0,bgd.GetParameter(0))
+fitFunc.FixParameter(1,bgd.GetParameter(1))
+fitFunc.FixParameter(2,bgd.GetParameter(2))
 
 results = histo.Fit(fitFunc,"ERSLB")
 
-#'''
+'''
 funcFile = r.TFile.Open(histname+"_fitFunc.root","UPDATE")
 fitFunc.Write()
 funcFile.Close()
 
 with open(histname+'_fitResults.txt','a') as of:
     print(results, file=of)
-#'''
+'''
     
 canvas = r.TCanvas("canvas")
 canvas.cd()
@@ -49,5 +49,5 @@ histo.Draw("h")
 fitFunc.Draw("same")
 
 
-canvas.Print(histname+"Fit.pdf")
+canvas.Print(histname+"_Fit.pdf")
 input('press enter to exit')
