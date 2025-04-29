@@ -3,12 +3,12 @@ import ROOT as r
 import sys
 import numpy as np
 
-histname = "histoPi20"
+histname = "histoK10"
 
 class Background:
     def __call__(self, arr,par):
         if (fitRange.IsInside(arr[0])):        
-            return par[0] + par[1]*arr[0] + par[2]*arr[0]*arr[0]
+            return par[0] + par[1]*r.TMath.Exp(par[2]*arr[0])
         else:
             r.TF1.RejectPoint()
             return 0.0
@@ -19,21 +19,21 @@ histo = histfile.Get(histname)
 histo.SetDirectory(0)
 histfile.Close()
 
-xmin = 4.7
-xmax = 5.7
+xmin = 4.4
+xmax = 4.9
 axmin = 4.0
-axmax = 6.5
+axmax = 5.5
 
 fitRange = r.Fit.DataRange()
-fitRange.AddRange(xmin,5.0)
-fitRange.AddRange(5.4,xmax)
+fitRange.AddRange(xmin,4.56)
+fitRange.AddRange(4.74,xmax)
 b = Background()
 fitFunc = r.TF1("fitFunc",b,xmin,xmax,3)
-fitFunc.SetParameters(40000.,-13000.,1200.)
+fitFunc.SetParameters(1300.,700000.,-1.4)
 
 results = histo.Fit(fitFunc,"ERSL")
 
-outname = histname+"_bgd"
+outname = histname+"hill"+"_bgd"
 #'''
 funcFile = r.TFile.Open(outname+"Func.root","RECREATE")
 fitFunc.Write("bgd")
