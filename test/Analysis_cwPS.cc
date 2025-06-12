@@ -26,7 +26,6 @@
 #include "TH2D.h"
 #include "TFile.h"
 #include "TMath.h"
-#include "TNtupleD.h"
 #include <Math/Vector4D.h>
 
 #include <sstream>
@@ -41,7 +40,6 @@ double protonMass = 0.938272;
 double lambdaMass = 1.115683;
 double phiMass = 1.019461;
 double psi2SMass = 3.686097;
-double B0sMass = 5.3669;
 
 template <typename T> T sqr(T v) { return v*v; }
 
@@ -73,7 +71,7 @@ private:
   edm::ParameterSet theConfig;
   bool debug;
   unsigned int theEventCount;
-  TNtupleD *tupKK, *tupPP;
+  TH1D *histoK, *histoPi, *histoPK;
 
   edm::EDGetTokenT< vector<pat::Muon> > theMuonToken;
   edm::EDGetTokenT< vector<pat::PackedCandidate> > theCandidateToken;
@@ -98,10 +96,10 @@ Analysis::~Analysis()
 
 void Analysis::beginJob()
 {
-  //create tuples
-  tupKK = new TNtupleD("tupKK","K+K- from Jpsi peak","mJKK:mKK");
-  tupPP = new TNtupleD("tupPP","pi+pi- from Jpsi peak","mJPP:mPP");
-
+  //create a histogram
+  histoK =new TH1D("histoK","kaon; Minv; #events",10000, 2.0,15.0);
+  histoPi =new TH1D("histoPi","pion; Minv; #events",10000, 2.0,15.0);
+  histoPK =new TH1D("histoPK","proton; Minv; #events",10000, 2.0,15.0);
   cout << "HERE Analysis::beginJob()" << endl;
 }
 
@@ -109,14 +107,19 @@ void Analysis::endJob()
 {
   //make a new Root file
   TFile myRootFile( theConfig.getParameter<std::string>("outHist").c_str(), "RECREATE");
-  //write data
-  tupKK->Write();
-  tupPP->Write();  
+  //write histogram data
+  histoK->Write();
+  cout << "Wrote histoK \n";
+  histoPi->Write();
+  cout << "Wrote histoPi \n";
+  histoPK->Write();
+  cout << "Wrote histoPK \n";
+  
 
   myRootFile.Close();
-  delete tupKK;
-  delete tupPP;
-  
+  delete histoK;
+  delete histoPi;
+  delete histoPK;
   cout << "HERE Cwiczenie::endJob()" << endl;
 }
 
@@ -161,23 +164,8 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
       double prob = TMath::Prob(vjp.chi2(),vjp.ndof());
       if (prob<0.1) continue;
 
-      // rescale muom momenta for exact jpsi mass
-      double alpha=1.;
-      math::XYZVector mom1 = im1->momentum();
-      math::XYZVector mom2 = im2->momentum();
-      {
-        double a = mom1.mag2()*mom2.mag2()-sqr(mom1.Dot(mom2));
-        double b = -sqr(jpsiMass)*mom1.Dot(mom2)+sqr(muonMass)*(mom1+mom2).mag2();
-        double c = -sqr(jpsiMass)*(sqr(jpsiMass)/4.-sqr(muonMass));
-        double delta= sqr(b)-4*a*c;
-        alpha = sqrt((-b+sqrt(delta))/2./a);
-      } 
-      lMuonsVector = lorentzVector((mom1+mom2)*alpha, jpsiMass);
-
-      
 
 
-      /////////////FIRST PACKED CANDIDATE///////////
       for (std::vector<pat::PackedCandidate>::const_iterator ic1 = candidates.begin(); ic1 < candidates.end(); ic1++) 
       {
         if(abs(ic1->pdgId()) != 211 || !ic1->hasTrackDetails() || ic1->pt() < 2. || ic1->charge()==0) continue;
@@ -215,21 +203,22 @@ void Analysis::analyze(const edm::Event& ev, const edm::EventSetup& es)
           if(std::min(deltaR(trk2,*mu1Ref),deltaR(trk2,*mu2Ref))<0.0003) continue;
 
           // HISTOGRAMS
+          //std::cout << "trackTTs.size() [3?]: "<< trackTTs.size() << std::endl;
           math::XYZVector cand2Mom = ic2->momentum();
 
           // two Kaons
-          ROOT::Math::PxPyPzEVector lVectorKK = lorentzVector(cand1Mom, kaonMass)+lorentzVector(cand2Mom,kaonMass);
-          ROOT::Math::PxPyPzEVector lVectorJKK = lMuonsVector + lVectorKK;
-          double mJKK = lVectorJKK.M();
-          if(mJKK<5.1 || mJKK>5.8) continue;
-          tupKK->Fill(mJKK,lVectorKK.M());
-          
+          ROOT::Math::PxPyPzEVector lFullVectorK = lMuonsVector+lorentzVector(cand1Mom, kaonMass)+lorentzVector(cand2Mom,kaonMass);
+          histoK->Fill(lFullVectorK.M());
+
           // two Pions
-          ROOT::Math::PxPyPzEVector lVectorPP = lorentzVector(cand1Mom, pionMass)+lorentzVector(cand2Mom,pionMass);
-          ROOT::Math::PxPyPzEVector lVectorJPP = lMuonsVector + lVectorPP;
-          double mJPP = lVectorJPP.M();
-          if(mJPP<4.8 || mJPP>5.5) continue;
-          tupPP->Fill(mJPP,lVectorPP.M());
+          ROOT::Math::PxPyPzEVector lFullVectorPi = lMuonsVector+lorentzVector(cand1Mom, pionMass)+lorentzVector(cand2Mom,pionMass);
+          histoPi->Fill(lFullVectorPi.M());
+
+          // Pion + Kaon
+          ROOT::Math::PxPyPzEVector lFullVectorPK = lMuonsVector+lorentzVector(cand1Mom, pionMass)+lorentzVector(cand2Mom,kaonMass);
+          histoPK->Fill(lFullVectorPK.M());
+          ROOT::Math::PxPyPzEVector lFullVectorKP = lMuonsVector+lorentzVector(cand1Mom, kaonMass)+lorentzVector(cand2Mom,pionMass);
+          histoPK->Fill(lFullVectorKP.M());
 
         }
         trackTTs.pop_back();  // removes trk1

@@ -6,7 +6,7 @@ from ROOT import *
 
 
 print ("Hello ROOT")
-fileName = "KK_B0s.root"
+fileName = "Jpsi_P_K_merged.root"
 
 print ('Read data from: ', fileName)
 gROOT.Reset()
@@ -15,12 +15,13 @@ f.ls()
 
 c1 = TCanvas('cHisto','cHisto',600,600)
 #c1.SetLogy(1)
-histo = gROOT.FindObject('hKaonKaon')
+ihisto = gROOT.FindObject('histoPi')
 
+histo = ihisto.Rebin(20,"histo")
 
 #histo.SetTitle("PP")
 histo.GetXaxis().CenterTitle(True)
-histo.SetAxisRange(0.9,1.2)   # 601-1001    10 000 bins overall
+histo.SetAxisRange(4.5,6.0)   # 601-1001    10 000 bins overall
 
 
 #histo.SetAxisRange(1.e3,10.e3,"Y")
